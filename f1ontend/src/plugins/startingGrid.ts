@@ -1,14 +1,13 @@
 /**
  * Starting-Grid Endpunkte des F1-Tippspiels.
  *
- * Beide Routen hängen im Backend an der Admin-Gruppe (JWT + Admin-Rolle),
- * daher wird ein Token entgegengenommen und – falls gesetzt – als
- * `Authorization: Bearer <token>` mitgeschickt.
- *
  *   POST /api/v1/results/{sessionKey}/grid/sync   // zieht die Grid-Daten
  *                                                 // von OpenF1 ins Backend
  *   GET  /api/v1/results/{sessionKey}/grid        // liefert die gespeicherten
  *                                                 // Grid-Einträge
+ *
+ * Beide Routen sind im Backend öffentlich (RegisterPublicRoutes), eine
+ * Authentifizierung wird nicht benötigt.
  */
 
 const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8080'
@@ -23,8 +22,16 @@ export type StartingGridEntry = {
 	lap_duration: number | null
 }
 
-function authHeader (token?: string): Record<string, string> {
-	return token ? { Authorization: `Bearer ${token}` } : {}
+/** Metadaten einer F1-Session (spiegelt models.Session). */
+export type SessionInfo = {
+	id: number
+	session_key: number
+	meeting_key: number
+	year: number
+	country_name: string
+	session_name: string
+	session_type: string
+	date_start: string
 }
 
 async function readError (res: Response): Promise<string> {
@@ -42,13 +49,10 @@ async function readError (res: Response): Promise<string> {
  * Stößt das Nachladen der Startaufstellung aus OpenF1 ins Backend an.
  * Antwort ist `{status: "synced"}`, die eigentlichen Daten liefert `getStartingGrid`.
  */
-export async function syncStartingGrid (sessionKey: number, token?: string): Promise<void> {
+export async function syncStartingGrid (sessionKey: number): Promise<void> {
 	const res = await fetch(
 		`${API_BASE}/api/v1/results/${sessionKey}/grid/sync`,
-		{
-			method: 'POST',
-			headers: authHeader(token),
-		},
+		{ method: 'POST' },
 	)
 
 	if (!res.ok) {
@@ -59,16 +63,8 @@ export async function syncStartingGrid (sessionKey: number, token?: string): Pro
 }
 
 /** Liest die im Backend gespeicherte Startaufstellung einer Session. */
-export async function getStartingGrid (
-	sessionKey: number,
-	token?: string,
-): Promise<StartingGridEntry[]> {
-	const res = await fetch(
-		`${API_BASE}/api/v1/results/${sessionKey}/grid`,
-		{
-			headers: authHeader(token),
-		},
-	)
+export async function getStartingGrid (sessionKey: number): Promise<StartingGridEntry[]> {
+	const res = await fetch(`${API_BASE}/api/v1/results/${sessionKey}/grid`)
 
 	if (!res.ok) {
 		throw new Error(
@@ -77,4 +73,21 @@ export async function getStartingGrid (
 	}
 
 	return await res.json() as StartingGridEntry[]
+}
+
+/**
+ * Fragt das Backend nach der aktuellsten F1-Session (via OpenF1
+ * `session_key=latest`). Wird genutzt, um die Startaufstellung ohne
+ * manuelle Eingabe des Session-Keys automatisch laden zu können.
+ */
+export async function getLatestSession (): Promise<SessionInfo> {
+	const res = await fetch(`${API_BASE}/api/v1/sessions/latest`)
+
+	if (!res.ok) {
+		throw new Error(
+			`Letzte Session konnte nicht ermittelt werden (HTTP ${res.status}): ${await readError(res)}`,
+		)
+	}
+
+	return await res.json() as SessionInfo
 }

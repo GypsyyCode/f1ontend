@@ -6,14 +6,17 @@
 					<div class="mb-4">
 						<div class="text-[10px] tracking-[0.3em] text-neutral-500">F1 TIPSPIEL · ÜBERSICHT</div>
 						<div class="text-xl font-bold">Startaufstellung</div>
+						<div v-if="latestSession" class="text-sm text-neutral-700 mt-1">
+							<strong>{{ latestSession.country_name }}</strong>
+							<span class="text-neutral-500"> · {{ latestSession.session_name }}</span>
+							<span class="text-neutral-500"> · {{ formatSessionDate(latestSession.date_start) }}</span>
+						</div>
 						<div class="text-xs text-neutral-500 mt-1">
-							Zieht die Grid-Daten einer Session über
-							<code class="font-mono text-neutral-700">POST /api/v1/results/{{ '{sessionKey}' }}/grid/sync</code>
-							ins Backend und zeigt sie anschließend an.
+							Automatisch für die jüngste Session geladen; Session-Key manuell anpassbar.
 						</div>
 					</div>
 
-					<div class="grid gap-3 md:grid-cols-[1fr_1fr_auto] items-end mb-4">
+					<div class="grid gap-3 md:grid-cols-[1fr_auto] items-end mb-4">
 						<v-text-field
 							v-model.number="sessionKey"
 							type="number"
@@ -22,14 +25,6 @@
 							persistent-hint
 							density="comfortable"
 							hide-spin-buttons
-						/>
-						<v-text-field
-							v-model="token"
-							label="Admin-JWT (optional)"
-							hint="Grid-Routen sind im Backend admin-geschützt"
-							persistent-hint
-							density="comfortable"
-							type="password"
 						/>
 						<div class="flex gap-2">
 							<v-btn
@@ -108,19 +103,35 @@
 </template>
 
 <script setup lang="ts">
-import { useStartingGrid } from '@/plugins/coupons/useStartingGrid'
+import { onMounted } from 'vue'
 import { colorForPosition } from '@/plugins/coupons/positionColors'
+import { useStartingGrid } from '@/plugins/coupons/useStartingGrid'
 
 const {
 	sessionKey,
-	token,
 	orderedEntries,
 	drivers,
+	latestSession,
 	loading,
 	error,
+	autoLoad,
 	sync,
 	reload,
 } = useStartingGrid()
+
+function formatSessionDate (iso: string): string {
+	const d = new Date(iso)
+	if (Number.isNaN(d.getTime())) return iso
+	return d.toLocaleString('de-DE', {
+		year: 'numeric',
+		month: '2-digit',
+		day: '2-digit',
+		hour: '2-digit',
+		minute: '2-digit',
+	})
+}
+
+onMounted(autoLoad)
 
 function driverName (number: number): string {
 	const d = drivers.value[number]

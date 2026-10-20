@@ -7,6 +7,7 @@
 		:submitting="submitting"
 		:error="error"
 		:created-id="createdId"
+		:placed-at="placedAt"
 		@submit="submit"
 	/>
 </template>
@@ -15,7 +16,7 @@
 	import BetCard from '@/components/bet-card/bet-card.vue'
 	import { useDriverChampionship } from '@/plugins/coupons/useDriverChampionship'
 
-	const { picks, submitting, error, createdId, submit } = useDriverChampionship(
+	const { picks, submitting, error, createdId, placedAt, submit } = useDriverChampionship(
 		{ driver_id: 1, name: 'Max Verstappen' },
 	)
 </script>

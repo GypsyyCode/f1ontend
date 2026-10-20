@@ -6,6 +6,7 @@
 		:submitting="submitting"
 		:error="error"
 		:created-id="createdId"
+		:placed-at="placedAt"
 		@submit="submit"
 		@reorder="({ from, to }) => swapPicks(from, to)"
 	/>
@@ -15,7 +16,7 @@
 	import BetCard from '@/components/bet-card/bet-card.vue'
 	import { useTop10 } from '@/plugins/coupons/useTop10'
 
-	const { top10, submitting, error, createdId, submit, swapPicks } = useTop10([
+	const { top10, submitting, error, createdId, placedAt, submit, swapPicks } = useTop10([
 		{ driver_id: 1, name: 'Max Verstappen' },
 		{ driver_id: 12, name: 'Kimi Antonelli' },
 		{ driver_id: 44, name: 'Lewis Hamilton' },

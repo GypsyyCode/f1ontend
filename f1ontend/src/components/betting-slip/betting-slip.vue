@@ -60,7 +60,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { PodiumDriver } from '@/plugins/coupons/useCoupon'
+import type { PodiumDriver } from '@/plugins/coupons/types'
 
 const props = defineProps<{
 	/** Anzeigename der Wette (z. B. "Top 3 Wette"). */
@@ -72,7 +72,7 @@ const props = defineProps<{
 	/** Optionale HEX-Hintergrundfarben für die Kästchen pro Platzierung. */
 	colors?: string[]
 	/** Optionaler Zeitstempel der Platzierung (frei formatiert). */
-	placedAt?: string
+	placedAt?: string | null
 }>()
 
 /** Letzte 16 Zeichen der Coupon-ID als "Barcode-Nummer" für die Fußzeile. */
@@ -82,7 +82,8 @@ const barcodeText = computed(() => {
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+
 .coupon {
 	background: #fef9ec;
 	border: 2px dashed #c0b89a;
@@ -92,6 +93,12 @@ const barcodeText = computed(() => {
 		0 10px 30px -10px rgb(0 0 0 / 0.15);
 	position: relative;
 	overflow: hidden;
+
+	// Einheitliche Coupon-Breite überall (BetCard, Wettschein-Dialog, …);
+	// Höhe passt sich dem Inhalt an.
+	width: 100%;
+	max-width: 560px;
+	margin-inline: auto;
 }
 
 /* Dekorative "Papier"-Textur: diagonales Rauschen in Beige. */

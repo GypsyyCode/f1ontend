@@ -7,6 +7,7 @@
 		:submitting="submitting"
 		:error="error"
 		:created-id="createdId"
+		:placed-at="placedAt"
 		@submit="submit"
 		@reorder="({ from, to }) => swapPicks(from, to)"
 	/>
@@ -16,7 +17,7 @@
 	import BetCard from '@/components/bet-card/bet-card.vue'
 	import { useTeamDuell } from '@/plugins/coupons/useTeamDuell'
 
-	const { picks, submitting, error, createdId, submit, swapPicks } = useTeamDuell([
+	const { picks, submitting, error, createdId, placedAt, submit, swapPicks } = useTeamDuell([
 		{ driver_id: 1, name: 'Max Verstappen' },
 		{ driver_id: 11, name: 'Sergio Pérez' },
 	])

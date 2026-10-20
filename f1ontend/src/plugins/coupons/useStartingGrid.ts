@@ -1,17 +1,25 @@
+import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
+import { useSettingsStore } from '@/stores/settings'
 import { listDrivers, type DriverInfo } from '../drivers'
 import { getStartingGrid, syncStartingGrid, type StartingGridEntry } from '../startingGrid'
 
 /**
- * Hält Session-Key, (Admin-)Token und die geladenen Grid-Daten einer Session.
+ * Hält Session-Key, Admin-Token und die geladenen Grid-Daten einer Session.
+ *
+ * Session-Key und Admin-Token liegen bewusst im Settings-Store (persistiert
+ * via IndexedDB), damit beide zwischen Reloads und Pages erhalten bleiben.
+ * Die eigentlichen Grid-/Driver-Daten sind flüchtig und bleiben als lokale
+ * Refs im Composable, da sie bei Bedarf frisch vom Backend geladen werden.
  *
  * Workflow:
  *  - `sync()`   → POST /grid/sync + anschließend GET /grid
  *  - `reload()` → nur GET /grid (ohne erneuten OpenF1-Fetch)
  */
-export function useStartingGrid (initialSessionKey = 0) {
-	const sessionKey = ref<number>(initialSessionKey)
-	const token = ref<string>('')
+export function useStartingGrid () {
+	const settings = useSettingsStore()
+	const { adminToken, startingGridSessionKey } = storeToRefs(settings)
+
 	const entries = ref<StartingGridEntry[]>([])
 	const drivers = ref<Record<number, DriverInfo>>({})
 	const loading = ref(false)
@@ -37,7 +45,7 @@ export function useStartingGrid (initialSessionKey = 0) {
 	}
 
 	async function reload () {
-		if (!sessionKey.value) {
+		if (!startingGridSessionKey.value) {
 			error.value = 'Bitte zuerst einen Session-Key angeben.'
 			return
 		}
@@ -45,7 +53,7 @@ export function useStartingGrid (initialSessionKey = 0) {
 		error.value = null
 		try {
 			const [grid] = await Promise.all([
-				getStartingGrid(sessionKey.value, token.value || undefined),
+				getStartingGrid(startingGridSessionKey.value, adminToken.value || undefined),
 				Object.keys(drivers.value).length === 0 ? loadDrivers() : Promise.resolve(),
 			])
 			entries.value = grid
@@ -57,16 +65,18 @@ export function useStartingGrid (initialSessionKey = 0) {
 	}
 
 	async function sync () {
-		if (!sessionKey.value) {
+		if (!startingGridSessionKey.value) {
 			error.value = 'Bitte zuerst einen Session-Key angeben.'
 			return
 		}
 		loading.value = true
 		error.value = null
 		try {
-			await syncStartingGrid(sessionKey.value, token.value || undefined)
-			const grid = await getStartingGrid(sessionKey.value, token.value || undefined)
-			entries.value = grid
+			await syncStartingGrid(startingGridSessionKey.value, adminToken.value || undefined)
+			entries.value = await getStartingGrid(
+				startingGridSessionKey.value,
+				adminToken.value || undefined,
+			)
 			if (Object.keys(drivers.value).length === 0) {
 				await loadDrivers()
 			}
@@ -78,8 +88,8 @@ export function useStartingGrid (initialSessionKey = 0) {
 	}
 
 	return {
-		sessionKey,
-		token,
+		sessionKey: startingGridSessionKey,
+		token: adminToken,
 		entries,
 		orderedEntries,
 		drivers,

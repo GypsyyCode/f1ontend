@@ -42,10 +42,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { watch } from 'vue'
 import BettingSlip from '@/components/betting-slip/betting-slip.vue'
 import List from '@/components/list/list.vue'
-import type { PodiumDriver } from '@/plugins/coupons/useCoupon'
+import type { PodiumDriver } from '@/plugins/coupons/types'
 
 const props = withDefaults(defineProps<{
 	/** Anzeigename der Wette (z. B. "Top 3 Wette"). Für den Wettschein-Header. */
@@ -59,11 +59,14 @@ const props = withDefaults(defineProps<{
 	submitting: boolean
 	error: string | null
 	createdId: string | null
+	/** Zeitstempel der Abgabe – kommt aus dem Pinia-Store (persistiert). */
+	placedAt?: string | null
 	submitLabel?: string
 	/** Reorder-Controls (Drag & Up/Down) in der Liste anbieten. Default: true. */
 	reorderable?: boolean
 }>(), {
 	colors: undefined,
+	placedAt: undefined,
 	submitLabel: undefined,
 	reorderable: true,
 })
@@ -73,20 +76,11 @@ const emit = defineEmits<{
 	reorder: [payload: { from: number, to: number }]
 }>()
 
-/** Zeitstempel der Abgabe – wird beim ersten createdId gesetzt. */
-const placedAt = ref<string | undefined>()
-
+// Nach erfolgreichem Abschluss nach oben scrollen, damit der Coupon oben
+// prominent sichtbar wird. `placedAt` kommt aus dem Store und wird dort
+// zusammen mit `createdId` gesetzt.
 watch(() => props.createdId, id => {
 	if (!id) return
-	placedAt.value = new Date().toLocaleString('de-DE', {
-		year: 'numeric',
-		month: '2-digit',
-		day: '2-digit',
-		hour: '2-digit',
-		minute: '2-digit',
-	})
-	// Nach erfolgreichem Abschluss nach oben scrollen, damit der Coupon
-	// prominent oben sichtbar ist.
 	window.scrollTo({ top: 0, behavior: 'smooth' })
 })
 </script>

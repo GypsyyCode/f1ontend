@@ -1,5 +1,6 @@
 <template>
-	<v-list lines="two" class="mx-4 px-4 py-1 rounded-2xl">
+	<div class="bg-neutral-100 v-card v-theme--light v-card--density-default v-card--variant-flat coupon font-mono text-neutral-900 mb-6">
+	<v-list lines="two" class="bg-neutral-100 mx-4 px-4 py-1 rounded-2xl">
 		<div
 			v-for="(pick, i) in picks"
 			:key="`${pick.driver_id}-${i}`"
@@ -29,6 +30,7 @@
 			/>
 		</div>
 	</v-list>
+</div>
 </template>
 
 <script setup lang="ts">
@@ -92,5 +94,19 @@ function onDragEnd () {
 	outline: 2px dashed rgb(59 130 246 / 0.6);
 	outline-offset: -2px;
 	background: rgb(59 130 246 / 0.05);
+}
+
+.coupon{
+	border-radius: 14px;
+	box-shadow:
+		0 1px 2px rgb(0 0 0 / 0.04),
+		0 10px 30px -10px rgb(0 0 0 / 0.15);
+	position: relative;
+	overflow: hidden;
+
+	/* Gleiche Coupon-Breite wie BettingSlip + Wettschein-Dialog. */
+	width: 100%;
+	max-width: 560px;
+	margin-inline: auto;
 }
 </style>

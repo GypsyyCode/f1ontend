@@ -76,3 +76,32 @@ export async function create<TData extends object> (
 
 	return await res.json() as CreatedCoupon<TData>
 }
+
+/**
+ * Listet alle angelegten Coupons einer bestimmten Wettart.
+ *
+ * @param category   Kategorie wie im Backend (`race`, `season`, `team`).
+ * @param schemaName Schema-Name wie im Backend (z. B. `top3coupon`).
+ * @param token      Optionales JWT – aktuell öffentlich.
+ */
+export async function listCoupons<TData> (
+	category: CouponCategory,
+	schemaName: string,
+	token?: string,
+): Promise<CreatedCoupon<TData>[]> {
+	const res = await fetch(
+		`${API_BASE}/api/v1/coupons/${category}/${schemaName}`,
+		{
+			headers: token ? { Authorization: `Bearer ${token}` } : {},
+		},
+	)
+
+	if (!res.ok) {
+		const message = await res.text().catch(() => res.statusText)
+		throw new Error(
+			`Coupons konnten nicht geladen werden (HTTP ${res.status}): ${message}`,
+		)
+	}
+
+	return await res.json() as CreatedCoupon<TData>[]
+}

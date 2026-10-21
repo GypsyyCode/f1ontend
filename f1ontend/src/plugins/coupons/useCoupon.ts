@@ -1,12 +1,15 @@
 import { computed, ref } from 'vue'
 import { useCouponsStore, type BetType } from '@/stores/coupons'
-import { create, type Coupon, type Placement } from '../coupon'
+import { create, type Coupon, type CouponContext, type Placement } from '../coupon'
 import type { PodiumDriver } from './types'
 
 export type { PodiumDriver }
 
-/** Baut aus den Picks des Nutzers den zu sendenden Coupon. */
-export type CouponBuilder<TData extends object> = (placements: Placement[]) => Coupon<TData>
+/** Baut aus den Picks des Nutzers (+ optionalem Kontext) den zu sendenden Coupon. */
+export type CouponBuilder<TData extends object> = (
+	placements: Placement[],
+	ctx: CouponContext,
+) => Coupon<TData>
 
 /**
  * Generischer Hook für eine Wette:
@@ -22,6 +25,7 @@ export function useCoupon<TData extends object> (
 	betType: BetType,
 	initialPicks: PodiumDriver[],
 	buildCoupon: CouponBuilder<TData>,
+	getSessionKey?: () => number | undefined,
 ) {
 	const store = useCouponsStore()
 	store.ensureDefaults(betType, initialPicks)
@@ -49,6 +53,7 @@ export function useCoupon<TData extends object> (
 		try {
 			const coupon = buildCoupon(
 				picks.value.map((d, i) => ({ driver_id: d.driver_id, position: i + 1 })),
+				{ sessionKey: getSessionKey?.() },
 			)
 			const created = await create(coupon)
 			createdId.value = created.id

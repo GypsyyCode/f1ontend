@@ -20,6 +20,14 @@ export type Placement = {
 }
 
 /**
+ * Zusätzlicher Kontext, den ein Coupon-Builder beim Bauen nutzen kann –
+ * z. B. die aktive Session für Renn-Wetten.
+ */
+export type CouponContext = {
+	sessionKey?: number
+}
+
+/**
  * Eine anzulegende Wette/Coupon.
  *
  * `category` + `schemaName` bestimmen den API-Endpunkt und damit die Wettart,

@@ -7,14 +7,23 @@
 		:error="error"
 		:created-id="createdId"
 		:placed-at="placedAt"
+		:session="session"
+		:locked="isStarted"
 		@submit="submit"
 		@reorder="({ from, to }) => swapPicks(from, to)"
 	/>
 </template>
 
 <script setup lang="ts">
+	import { storeToRefs } from 'pinia'
+	import { onMounted } from 'vue'
 	import BetCard from '@/components/bet-card/bet-card.vue'
 	import { useTop10 } from '@/plugins/coupons/useTop10'
+	import { useSessionStore } from '@/stores/session'
+
+	const sessionStore = useSessionStore()
+	const { session, isStarted } = storeToRefs(sessionStore)
+	onMounted(() => sessionStore.loadLatest())
 
 	const { top10, submitting, error, createdId, placedAt, submit, swapPicks } = useTop10([
 		{ driver_id: 1, name: 'Max Verstappen' },

@@ -12,6 +12,7 @@ import DriverOfTheDay from '@/pages/driverOfTheDay.vue'
 import FastestLap from '@/pages/fastestLap.vue'
 import FirstDnf from '@/pages/firstDnf.vue'
 import Index from '@/pages/index.vue'
+import Login from '@/pages/login.vue'
 import MeinFahrer from '@/pages/meinFahrer.vue'
 import Pole from '@/pages/pole.vue'
 import StartingGrid from '@/pages/startingGrid.vue'
@@ -69,6 +70,10 @@ const router = createRouter({
     {
       path: '/starting-grid',
       component: StartingGrid,
+    },
+    {
+      path: '/login',
+      component: Login,
     },
   ],
 })

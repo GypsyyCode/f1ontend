@@ -35,6 +35,23 @@
           title="Startaufstellung"
         />
       </v-list>
+
+      <template #append>
+        <v-divider />
+        <div class="pa-3">
+          <template v-if="auth.isAuthenticated">
+            <div class="text-xs text-neutral-600 px-2 mb-2">
+              Angemeldet als <strong>{{ auth.player?.display_name || auth.player?.username }}</strong>
+            </div>
+            <v-btn block variant="tonal" size="small" prepend-icon="mdi-logout" @click="onLogout">
+              Abmelden
+            </v-btn>
+          </template>
+          <v-btn v-else block variant="tonal" size="small" prepend-icon="mdi-login" to="/login">
+            Anmelden
+          </v-btn>
+        </div>
+      </template>
     </v-navigation-drawer>
 
     <v-main>
@@ -44,6 +61,17 @@
 </template>
 
 <script lang="ts" setup>
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
+const router = useRouter()
+
+function onLogout () {
+  auth.logout()
+  router.push('/login')
+}
+
 const navGroups = [
   {
     title: 'Mein Fahrer',

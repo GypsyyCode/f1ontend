@@ -12,8 +12,8 @@ import {
 /**
  * Hält Session-Key und die geladenen Grid-Daten einer Session.
  *
- * Der Session-Key liegt im Settings-Store (persistiert via IndexedDB), damit
- * er zwischen Reloads und Pages erhalten bleibt. Die eigentlichen Grid-/
+ * Der Session-Key liegt im geteilten Session-Store (persistiert via IndexedDB),
+ * damit er zwischen Reloads und Pages erhalten bleibt. Die eigentlichen Grid-/
  * Driver-Daten sind flüchtig und werden bei Bedarf frisch geladen.
  *
  * Workflow:

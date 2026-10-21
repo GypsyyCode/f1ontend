@@ -17,7 +17,15 @@ export const useSessionStore = defineStore('session', () => {
 	const loading = ref(false)
 	const error = ref<string | null>(null)
 
-	/** True, sobald die aktive Session laut `date_start` begonnen hat. */
+	/**
+	 * True, sobald die aktive Session laut `date_start` begonnen hat.
+	 *
+	 * Momentaufnahme: wird nur neu berechnet, wenn sich `session` ändert (also
+	 * bei jedem `loadLatest()` / Page-Mount). Läuft der Start-Zeitpunkt ab,
+	 * während die Seite offen bleibt, greift der Lock erst beim nächsten Laden.
+	 * Reicht für Phase 1; eine feinere Logik kommt mit dem „kommende Session"-
+	 * Endpoint (Phase 0).
+	 */
 	const isStarted = computed(() => {
 		if (!session.value) return false
 		const start = new Date(session.value.date_start).getTime()
@@ -26,6 +34,8 @@ export const useSessionStore = defineStore('session', () => {
 
 	/** Lädt die aktuellste Session vom Backend und setzt sie als aktiv. */
 	async function loadLatest () {
+		// Parallele Aufrufe (z. B. zwei Renn-Seiten) nicht doppelt feuern lassen.
+		if (loading.value) return
 		loading.value = true
 		error.value = null
 		try {

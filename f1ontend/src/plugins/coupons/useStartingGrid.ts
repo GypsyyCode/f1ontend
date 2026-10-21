@@ -1,12 +1,11 @@
 import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
-import { useSettingsStore } from '@/stores/settings'
+import { useSessionStore } from '@/stores/session'
 import { listDrivers, type DriverInfo } from '../drivers'
 import {
 	getLatestSession,
 	getStartingGrid,
 	syncStartingGrid,
-	type SessionInfo,
 	type StartingGridEntry,
 } from '../startingGrid'
 
@@ -25,12 +24,11 @@ import {
  *  - `reload()`   → nur GET /grid (ohne erneuten OpenF1-Fetch).
  */
 export function useStartingGrid () {
-	const settings = useSettingsStore()
-	const { startingGridSessionKey } = storeToRefs(settings)
+	const sessionStore = useSessionStore()
+	const { sessionKey: startingGridSessionKey, session: latestSession } = storeToRefs(sessionStore)
 
 	const entries = ref<StartingGridEntry[]>([])
 	const drivers = ref<Record<number, DriverInfo>>({})
-	const latestSession = ref<SessionInfo | null>(null)
 	const loading = ref(false)
 	const error = ref<string | null>(null)
 
@@ -116,8 +114,7 @@ export function useStartingGrid () {
 			return
 		}
 
-		latestSession.value = session
-		startingGridSessionKey.value = session.session_key
+		sessionStore.setSession(session)
 
 		let syncError: unknown
 		try {

@@ -8,7 +8,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import ConstructorChampionship from '@/pages/constructorChampionship.vue'
 import DriverChampionship from '@/pages/driverChampionship.vue'
+import DriverOfTheDay from '@/pages/driverOfTheDay.vue'
+import FastestLap from '@/pages/fastestLap.vue'
+import FirstDnf from '@/pages/firstDnf.vue'
 import Index from '@/pages/index.vue'
+import MeinFahrer from '@/pages/meinFahrer.vue'
+import Pole from '@/pages/pole.vue'
 import StartingGrid from '@/pages/startingGrid.vue'
 import TeamDuell from '@/pages/teamDuell.vue'
 import Top10 from '@/pages/top10.vue'
@@ -24,6 +29,26 @@ const router = createRouter({
     {
       path: '/top10',
       component: Top10,
+    },
+    {
+      path: '/pole',
+      component: Pole,
+    },
+    {
+      path: '/fastest-lap',
+      component: FastestLap,
+    },
+    {
+      path: '/first-dnf',
+      component: FirstDnf,
+    },
+    {
+      path: '/driver-of-the-day',
+      component: DriverOfTheDay,
+    },
+    {
+      path: '/mein-fahrer',
+      component: MeinFahrer,
     },
     {
       path: '/driver-championship',

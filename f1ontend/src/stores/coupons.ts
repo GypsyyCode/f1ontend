@@ -9,6 +9,11 @@ export type BetType =
 	| 'driverChampionship'
 	| 'constructorChampionship'
 	| 'teamDuell'
+	| 'pole'
+	| 'fastestLap'
+	| 'firstDnf'
+	| 'driverOfTheDay'
+	| 'myDriverPlacement'
 
 /**
  * Persistiertes State pro Wettart: die aktuell gesetzten Picks (Reihenfolge =

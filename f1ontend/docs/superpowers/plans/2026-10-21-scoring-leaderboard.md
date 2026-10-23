@@ -1,9 +1,13 @@
 # Phase 3b: Scoring-Engine & Punkteliste (Leaderboard)
 
-> Status: **geplant, nicht implementiert.** Dieser Teil wurde bewusst nicht autonom
-> gebaut, weil er (a) nur mit laufendem Postgres + OpenF1 end-to-end verifizierbar ist und
-> (b) an einer echten Architektur-Entscheidung hängt (siehe „Die Weggabelung"). Der Rest von
-> Phase 3 (Auth-Frontend gegen die bestehenden Backend-Endpoints) ist bereits umgesetzt.
+> Status: **umgesetzt (Variante C: Hybrid), E2E-Verifikation steht aus.** Siehe
+> den Umsetzungsplan unter
+> [2026-10-23-scoring-leaderboard-impl.md](./2026-10-23-scoring-leaderboard-impl.md)
+> (Branch `phase3b-scoring` in beiden Repos). MVP-Umfang: `top3coupon` /
+> `top10coupon` / `myDriverPlacement` werden tatsächlich gewertet; `polePosition`,
+> `fastestLap`, `firstDnf`, `driverOfTheDay`, `teamDuell` und beide Championship-
+> Wetten liefern aktuell 0, bis die Datenquellen (Qualifying-P1, DotD, Lap-Zeiten,
+> Saison-Ende) angebunden sind.
 
 ## Ausgangslage (verifiziert im Backend `../../f1-tip-game`)
 

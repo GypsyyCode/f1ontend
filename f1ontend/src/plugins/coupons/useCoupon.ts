@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue'
 import { useCouponsStore, type BetType } from '@/stores/coupons'
+import { useAuthStore } from '@/stores/auth'
 import { create, type Coupon, type CouponContext, type Placement } from '../coupon'
 import type { PodiumDriver } from './types'
 
@@ -28,6 +29,7 @@ export function useCoupon<TData extends object> (
 	getSessionKey?: () => number | undefined,
 ) {
 	const store = useCouponsStore()
+	const auth = useAuthStore()
 	store.ensureDefaults(betType, initialPicks)
 
 	const picks = computed<PodiumDriver[]>({
@@ -55,7 +57,7 @@ export function useCoupon<TData extends object> (
 				picks.value.map((d, i) => ({ driver_id: d.driver_id, position: i + 1 })),
 				{ sessionKey: getSessionKey?.() },
 			)
-			const created = await create(coupon)
+			const created = await create(coupon, auth.token ?? undefined)
 			createdId.value = created.id
 		} catch (e) {
 			error.value = e instanceof Error ? e.message : String(e)

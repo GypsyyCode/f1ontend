@@ -64,3 +64,65 @@ export async function triggerScoring (sessionKey: number, token: string): Promis
 	}
 	return await res.json() as ScoringResult
 }
+
+export type SessionAggregates = {
+	session_key: number
+	pole_driver_number?: number | null
+	fastest_lap_driver_number?: number | null
+	first_dnf_driver_number?: number | null
+	driver_of_the_day_driver_number?: number | null
+}
+
+/**
+ * Berechnet pole/fastestLap/firstDnf für eine Session (admin-geschützt).
+ * DriverOfTheDay bleibt unverändert und muss separat über setDriverOfTheDay
+ * gesetzt werden.
+ *
+ * Backend-Endpoint: POST /api/v1/aggregates/:sessionKey/compute
+ */
+export async function computeAggregates (sessionKey: number, token: string): Promise<SessionAggregates> {
+	const res = await fetch(`${API_BASE}/api/v1/aggregates/${sessionKey}/compute`, {
+		method: 'POST',
+		headers: { Authorization: `Bearer ${token}` },
+	})
+	if (!res.ok) {
+		const msg = await res.text().catch(() => res.statusText)
+		throw new Error(`Aggregate konnten nicht berechnet werden (HTTP ${res.status}): ${msg}`)
+	}
+	return await res.json() as SessionAggregates
+}
+
+/**
+ * Setzt DriverOfTheDay manuell (admin-geschützt).
+ *
+ * Backend-Endpoint: PUT /api/v1/aggregates/:sessionKey/driver-of-the-day
+ */
+export async function setDriverOfTheDay (sessionKey: number, driverNumber: number, token: string): Promise<SessionAggregates> {
+	const res = await fetch(`${API_BASE}/api/v1/aggregates/${sessionKey}/driver-of-the-day`, {
+		method: 'PUT',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify({ driver_number: driverNumber }),
+	})
+	if (!res.ok) {
+		const msg = await res.text().catch(() => res.statusText)
+		throw new Error(`Driver of the Day konnte nicht gesetzt werden (HTTP ${res.status}): ${msg}`)
+	}
+	return await res.json() as SessionAggregates
+}
+
+/**
+ * Liefert die aktuell gespeicherten Aggregate (public).
+ * Gibt null zurück, wenn für die Session noch keine Row angelegt wurde (404).
+ */
+export async function getAggregates (sessionKey: number): Promise<SessionAggregates | null> {
+	const res = await fetch(`${API_BASE}/api/v1/aggregates/${sessionKey}`)
+	if (res.status === 404) return null
+	if (!res.ok) {
+		const msg = await res.text().catch(() => res.statusText)
+		throw new Error(`Aggregate konnten nicht geladen werden (HTTP ${res.status}): ${msg}`)
+	}
+	return await res.json() as SessionAggregates
+}

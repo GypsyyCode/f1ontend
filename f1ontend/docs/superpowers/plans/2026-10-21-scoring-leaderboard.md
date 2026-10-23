@@ -1,13 +1,17 @@
 # Phase 3b: Scoring-Engine & Punkteliste (Leaderboard)
 
-> Status: **umgesetzt (Variante C: Hybrid), E2E-Verifikation steht aus.** Siehe
-> den Umsetzungsplan unter
+> Status: **umgesetzt (Variante C: Hybrid)** inklusive Phase 4 für die vier
+> Single-Driver-Renn-Wetten (`polePosition`, `fastestLap`, `firstDnf`,
+> `driverOfTheDay`). Umsetzungspläne:
 > [2026-10-23-scoring-leaderboard-impl.md](./2026-10-23-scoring-leaderboard-impl.md)
-> (Branch `phase3b-scoring` in beiden Repos). MVP-Umfang: `top3coupon` /
-> `top10coupon` / `myDriverPlacement` werden tatsächlich gewertet; `polePosition`,
-> `fastestLap`, `firstDnf`, `driverOfTheDay`, `teamDuell` und beide Championship-
-> Wetten liefern aktuell 0, bis die Datenquellen (Qualifying-P1, DotD, Lap-Zeiten,
-> Saison-Ende) angebunden sind.
+> (Phase 3b) und
+> [2026-10-23-phase4-remaining-race-scorings.md](./2026-10-23-phase4-remaining-race-scorings.md)
+> (Phase 4). Branch `phase4-single-driver-scorings` in beiden Repos.
+> Pole kommt aus `StartingGrid` (Position == 1), FastestLap + FirstDnf
+> werden aus OpenF1 Laps berechnet und in einer neuen `session_aggregates`-Tabelle
+> persistiert. DriverOfTheDay ist manueller Admin-Input, weil OpenF1 das Feld
+> nicht liefert. Noch offen: Saison-Wetten (`teamDuell`, Championship-Ranks) —
+> andere Trigger-Semantik (Saison-Ende), separate Phase.
 
 ## Ausgangslage (verifiziert im Backend `../../f1-tip-game`)
 

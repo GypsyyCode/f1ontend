@@ -19,6 +19,7 @@ import StartingGrid from '@/pages/startingGrid.vue'
 import TeamDuell from '@/pages/teamDuell.vue'
 import Top10 from '@/pages/top10.vue'
 import Wettschein from '@/pages/wettschein.vue'
+import Punkteliste from '@/pages/punkteliste.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -74,6 +75,10 @@ const router = createRouter({
     {
       path: '/login',
       component: Login,
+    },
+    {
+      path: '/punkteliste',
+      component: Punkteliste,
     },
   ],
 })

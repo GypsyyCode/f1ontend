@@ -3,3 +3,7 @@
     font-family: var(--font-mono);
   }
 }
+
+.custom-height {
+	height: calc(100vh - 200px);
+}

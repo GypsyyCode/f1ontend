@@ -1,5 +1,5 @@
 <template>
-  <v-list-item class="font-mono" :subtitle="subtitle" :title="title">
+  <v-list-item class="font-mono bg-taupe-200" :subtitle="subtitle" :title="title">
     <template #prepend>
       <v-icon
         v-if="reorderable"

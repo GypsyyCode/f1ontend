@@ -2,7 +2,7 @@
 	<v-container fluid class="mt-8 h-full flex items-center w-full flex-col grow">
 		<div class="flex flex-col grow w-full max-w-5xl mx-auto">
 			<v-container>
-				<v-card class="py-5 px-6 rounded-3xl" rounded="3xl" variant="flat">
+				<v-card class="flex flex-col custom-height py-5 px-6 rounded-3xl" rounded="3xl" variant="flat">
 					<div class="flex items-center justify-between mb-4">
 						<div>
 							<div class="text-[10px] tracking-[0.3em] text-neutral-500">F1 TIPSPIEL · ÜBERSICHT</div>
@@ -14,7 +14,7 @@
 						<v-btn
 							:loading="loading"
 							:disabled="loading"
-							variant="tonal"
+							variant="plain"
 							prepend-icon="mdi-refresh"
 							@click="load"
 						>
@@ -73,7 +73,7 @@
 					</div>
 
 					<!-- Legende -->
-					<div class="mt-5 flex flex-wrap gap-3 text-[10px] tracking-[0.2em] text-neutral-500">
+					<div class=" mt-auto mb-1 mx-auto flex flex-wrap gap-3 text-[10px] tracking-[0.2em] text-neutral-500">
 						<div
 							v-for="(c, i) in positionColors"
 							:key="i"

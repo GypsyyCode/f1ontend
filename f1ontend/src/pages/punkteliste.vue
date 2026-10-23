@@ -13,16 +13,34 @@
 							</div>
 						</div>
 
-						<v-btn
-							:loading="loading"
-							:disabled="loading"
-							variant="plain"
-							prepend-icon="mdi-refresh"
-							@click="load"
-						>
-							Aktualisieren
-						</v-btn>
+						<div class="flex items-center gap-2">
+							<v-btn
+								v-if="isAdmin"
+								:loading="scoring"
+								:disabled="scoring || !session.sessionKey || !auth.token"
+								color="primary"
+								variant="tonal"
+								prepend-icon="mdi-calculator-variant"
+								@click="runScoring"
+							>
+								Scoring auslösen
+							</v-btn>
+
+							<v-btn
+								:loading="loading"
+								:disabled="loading"
+								variant="plain"
+								prepend-icon="mdi-refresh"
+								@click="load"
+							>
+								Aktualisieren
+							</v-btn>
+						</div>
 					</div>
+
+					<v-alert v-if="scoringMsg" type="success" variant="tonal" class="mb-4">
+						{{ scoringMsg }}
+					</v-alert>
 
 					<!-- Filter -->
 					<div class="flex flex-wrap gap-3 mb-4">
@@ -101,7 +119,7 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import { getLeaderboard, type LeaderboardRow } from '@/plugins/scores'
+import { getLeaderboard, triggerScoring, type LeaderboardRow } from '@/plugins/scores'
 import { positionColors } from '@/plugins/coupons/positionColors'
 import { useAuthStore } from '@/stores/auth'
 import { useSessionStore } from '@/stores/session'
@@ -115,6 +133,11 @@ const scope = ref<Scope>('all')
 const rows = ref<LeaderboardRow[]>([])
 const loading = ref(false)
 const error = ref<string | null>(null)
+
+const scoring = ref(false)
+const scoringMsg = ref<string | null>(null)
+
+const isAdmin = computed(() => auth.player?.role === 'admin')
 
 async function load () {
 	loading.value = true
@@ -147,5 +170,21 @@ function displayNameFor (row: LeaderboardRow) {
 
 function isMe (row: LeaderboardRow) {
 	return auth.player?.id === row.player_id
+}
+
+async function runScoring () {
+	if (!session.sessionKey || !auth.token) return
+	scoring.value = true
+	error.value = null
+	scoringMsg.value = null
+	try {
+		const r = await triggerScoring(session.sessionKey, auth.token)
+		scoringMsg.value = `Scoring für Session ${r.session_key} ausgeführt: ${r.scored_coupons} Coupons gewertet.`
+		await load()
+	} catch (e) {
+		error.value = e instanceof Error ? e.message : String(e)
+	} finally {
+		scoring.value = false
+	}
 }
 </script>

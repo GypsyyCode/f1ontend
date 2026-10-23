@@ -41,3 +41,26 @@ export async function getLeaderboard (filter: LeaderboardFilter = {}): Promise<L
 	}
 	return await res.json() as LeaderboardRow[]
 }
+
+export type ScoringResult = {
+	session_key: number
+	scored_coupons: number
+}
+
+/**
+ * Löst das Scoring für eine Session aus (admin-geschützt).
+ *
+ * Backend-Endpoint: POST /api/v1/scoring/:sessionKey
+ * Setzt für alle Coupons mit matching session_key das `score`-Feld.
+ */
+export async function triggerScoring (sessionKey: number, token: string): Promise<ScoringResult> {
+	const res = await fetch(`${API_BASE}/api/v1/scoring/${sessionKey}`, {
+		method: 'POST',
+		headers: { Authorization: `Bearer ${token}` },
+	})
+	if (!res.ok) {
+		const msg = await res.text().catch(() => res.statusText)
+		throw new Error(`Scoring konnte nicht ausgelöst werden (HTTP ${res.status}): ${msg}`)
+	}
+	return await res.json() as ScoringResult
+}

@@ -16,6 +16,29 @@
 						<div class="flex items-center gap-2">
 							<v-btn
 								v-if="isAdmin"
+								:loading="computing"
+								:disabled="computing || !session.sessionKey || !auth.token"
+								color="secondary"
+								variant="tonal"
+								prepend-icon="mdi-calculator"
+								@click="runCompute"
+							>
+								Aggregate berechnen
+							</v-btn>
+
+							<v-btn
+								v-if="isAdmin"
+								:disabled="!session.sessionKey || !auth.token"
+								color="secondary"
+								variant="tonal"
+								prepend-icon="mdi-star-circle"
+								@click="dotdDialog = true"
+							>
+								Fahrer des Tages setzen
+							</v-btn>
+
+							<v-btn
+								v-if="isAdmin"
 								:loading="scoring"
 								:disabled="scoring || !session.sessionKey || !auth.token"
 								color="primary"
@@ -111,6 +134,34 @@
 							</tr>
 						</tbody>
 					</v-table>
+
+					<v-dialog v-model="dotdDialog" max-width="420">
+						<v-card>
+							<v-card-title>Fahrer des Tages</v-card-title>
+							<v-card-text>
+								<v-text-field
+									v-model.number="dotdDriverNumber"
+									label="Fahrernummer"
+									type="number"
+									min="1"
+									density="comfortable"
+									variant="outlined"
+								/>
+							</v-card-text>
+							<v-card-actions>
+								<v-spacer />
+								<v-btn variant="text" @click="dotdDialog = false">Abbrechen</v-btn>
+								<v-btn
+									color="primary"
+									:loading="settingDotd"
+									:disabled="settingDotd || !dotdDriverNumber"
+									@click="submitDotd"
+								>
+									Setzen
+								</v-btn>
+							</v-card-actions>
+						</v-card>
+					</v-dialog>
 				</v-card>
 			</v-container>
 		</div>
@@ -119,7 +170,7 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import { getLeaderboard, triggerScoring, type LeaderboardRow } from '@/plugins/scores'
+import { computeAggregates, getLeaderboard, setDriverOfTheDay, triggerScoring, type LeaderboardRow } from '@/plugins/scores'
 import { positionColors } from '@/plugins/coupons/positionColors'
 import { useAuthStore } from '@/stores/auth'
 import { useSessionStore } from '@/stores/session'
@@ -138,6 +189,11 @@ const scoring = ref(false)
 const scoringMsg = ref<string | null>(null)
 
 const isAdmin = computed(() => auth.player?.role === 'admin')
+
+const computing = ref(false)
+const dotdDialog = ref(false)
+const dotdDriverNumber = ref<number | null>(null)
+const settingDotd = ref(false)
 
 async function load () {
 	loading.value = true
@@ -185,6 +241,42 @@ async function runScoring () {
 		error.value = e instanceof Error ? e.message : String(e)
 	} finally {
 		scoring.value = false
+	}
+}
+
+async function runCompute () {
+	if (!session.sessionKey || !auth.token) return
+	computing.value = true
+	error.value = null
+	scoringMsg.value = null
+	try {
+		const agg = await computeAggregates(session.sessionKey, auth.token)
+		const parts = [
+			agg.pole_driver_number ? `Pole #${agg.pole_driver_number}` : 'Pole —',
+			agg.fastest_lap_driver_number ? `FL #${agg.fastest_lap_driver_number}` : 'FL —',
+			agg.first_dnf_driver_number ? `DNF #${agg.first_dnf_driver_number}` : 'DNF —',
+		]
+		scoringMsg.value = `Aggregate berechnet: ${parts.join(' · ')}`
+	} catch (e) {
+		error.value = e instanceof Error ? e.message : String(e)
+	} finally {
+		computing.value = false
+	}
+}
+
+async function submitDotd () {
+	if (!session.sessionKey || !auth.token || !dotdDriverNumber.value) return
+	settingDotd.value = true
+	error.value = null
+	try {
+		await setDriverOfTheDay(session.sessionKey, dotdDriverNumber.value, auth.token)
+		scoringMsg.value = `Fahrer des Tages gesetzt: #${dotdDriverNumber.value}`
+		dotdDialog.value = false
+		dotdDriverNumber.value = null
+	} catch (e) {
+		error.value = e instanceof Error ? e.message : String(e)
+	} finally {
+		settingDotd.value = false
 	}
 }
 </script>

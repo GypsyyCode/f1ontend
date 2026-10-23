@@ -76,6 +76,7 @@ const navGroups = [
   {
     title: 'Mein Fahrer',
     items: [
+      { to: '/punkteliste', exact: false, label: 'Punkteliste', icon: 'mdi-trophy-award' },
       { to: '/mein-fahrer', exact: false, label: 'Mein Fahrer', icon: 'mdi-account-star' },
       { to: '/driver-championship', exact: false, label: 'Fahrer-WM', icon: 'mdi-trophy' },
       { to: '/constructor-championship', exact: false, label: 'Konstrukteurs-WM', icon: 'mdi-car-sports' },

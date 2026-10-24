@@ -1483,7 +1483,7 @@ git commit -m "docs(plans): mark Phase 4 (single-driver race scorings) complete"
 
 ## Offene Punkte (nicht Teil von Phase 4)
 
-- **Saison-Wetten:** `teamDuell`, `driverChampionship`, `constructorChampionship`. Andere Trigger-Semantik (Saison-Ende, einmal pro Saison), eigenes Scoring-Interface. Separate Phase.
+- ~~**Saison-Wetten:** `teamDuell`, `driverChampionship`, `constructorChampionship`. Andere Trigger-Semantik (Saison-Ende, einmal pro Saison), eigenes Scoring-Interface. Separate Phase.~~ → **umgesetzt in Phase 5** (`docs/superpowers/plans/2026-10-24-saison-wetten-scoring.md`): Hybrid Compute+Override, Scheduler-Auto-Trigger, Teams-Mapping, Admin-UI auf `/punkteliste`.
 - **Pole-Semantik:** Wir verwenden aktuell die **Startaufstellung** (post-penalty) als Pole-Quelle. Das ist pragmatisch, aber nicht strikt „Pole-Position im sportlichen Sinn" (= Qualifying-P1). Falls das zu Diskussionen führt: zweiter Sync + Scoring über die Qualifying-Session (OpenF1 unterstützt `session_type=Qualifying`-Filter).
 - **DotD-UX:** aktuell ist der Admin-Dialog nur ein Zahlen-Input. Eine schönere Variante wäre ein Fahrer-Picker mit Namen/Nummern (braucht Driver-Store, der schon existiert). Nicht blocking.
 - **Transaktion ums Scoring:** gilt wie in Phase 3b. Weiterhin offen.

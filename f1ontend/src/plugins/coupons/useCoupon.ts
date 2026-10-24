@@ -27,6 +27,7 @@ export function useCoupon<TData extends object> (
 	initialPicks: PodiumDriver[],
 	buildCoupon: CouponBuilder<TData>,
 	getSessionKey?: () => number | undefined,
+	getSeasonYear?: () => number | undefined,
 ) {
 	const store = useCouponsStore()
 	const auth = useAuthStore()
@@ -55,7 +56,7 @@ export function useCoupon<TData extends object> (
 		try {
 			const coupon = buildCoupon(
 				picks.value.map((d, i) => ({ driver_id: d.driver_id, position: i + 1 })),
-				{ sessionKey: getSessionKey?.() },
+				{ sessionKey: getSessionKey?.(), seasonYear: getSeasonYear?.() },
 			)
 			const created = await create(coupon, auth.token ?? undefined)
 			createdId.value = created.id

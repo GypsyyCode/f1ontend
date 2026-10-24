@@ -18,7 +18,7 @@ import { idbGet, idbSet } from '@/lib/idb'
 
 const KEY_PREFIX = 'pinia:'
 const DEBOUNCE_MS = 120
-const IGNORED_STORES = new Set<string>()
+const IGNORED_STORES = new Set<string>(['season'])
 
 /** Tiefes Klonen für die Persistenz; nutzt structuredClone wenn verfügbar. */
 function snapshot (state: unknown): unknown {

@@ -1,9 +1,11 @@
 # Saison-Wetten-Scoring — Design Spec
 
 **Datum:** 2026-10-24
-**Status:** Design (zur Freigabe)
+**Status:** **umgesetzt** auf Branch `phase5-season-scoring` in beiden Repos (`f1-tip-game` + `f1ontend`). Siehe Implementation-Plan `docs/superpowers/plans/2026-10-24-saison-wetten-scoring.md`.
 **Vorgänger:** Phase 3b (`2026-10-21-scoring-leaderboard.md`), Phase 4 (`2026-10-23-phase4-remaining-race-scorings.md`)
 **Nachfolger:** separate Implementation-Pläne (BE + FE), erzeugt via `writing-plans`
+
+**Nebenbefund aus der Umsetzung:** Bei der Verifikation von Task 7 ist aufgefallen, dass die bereits existierenden JSONB-Queries aus Phase 3b (`ScoreSession`, Leaderboard-Repository) den Pfad `schema::jsonb -> 'data' ->> …` benutzten — aber `coupons.Schema[T].Value()` serialisiert nur `Data` ohne `{"data": …}`-Wrapper. Die Queries hatten also nie Zeilen getroffen. Alle drei Call-Sites sind in Commit `00e2be5` auf `schema::jsonb ->> …` korrigiert.
 
 ---
 

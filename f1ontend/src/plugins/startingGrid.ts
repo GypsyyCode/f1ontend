@@ -91,3 +91,16 @@ export async function getLatestSession (): Promise<SessionInfo> {
 
 	return await res.json() as SessionInfo
 }
+
+/**
+ * Lädt die früheste Session eines Jahres (Season-Start) für den Lock in
+ * Saison-Wetten. Backend-Endpoint: GET /api/v1/sessions/season-start?year=
+ */
+export async function getSeasonStart (year: number): Promise<SessionInfo> {
+	const res = await fetch(`${API_BASE}/api/v1/sessions/season-start?year=${year}`)
+	if (!res.ok) {
+		const message = await res.text().catch(() => res.statusText)
+		throw new Error(`Saison-Start konnte nicht geladen werden (HTTP ${res.status}): ${message}`)
+	}
+	return await res.json() as SessionInfo
+}

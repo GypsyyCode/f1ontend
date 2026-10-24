@@ -1,31 +1,31 @@
-import type { Coupon, Placement } from '../coupon'
+import type { Coupon, CouponContext } from '../coupon'
 
 /**
  * Schema-Daten der "Constructor Championship Wette".
  *
- * Analog zur Fahrer-Championship liegt die Platzierung unter dem Schlüssel
- * `placement` (Singular), wie es das Backend-Schema vorgibt.
+ * Backend-Schema (neu, mit Team-ID): placement.team_id = Team-ID,
+ * placement.position = getippter WM-Rang.
  */
 export type ConstructorChampionshipData = {
-	placement: Placement
+	placement: {
+		team_id: number
+		position: number
+	}
+	season_year?: number
 }
 
-/**
- * Baut eine "Constructor Championship Wette" (Kategorie "season", Schema
- * "constructorChampionshipRank"). Erwartet genau eine Platzierung.
- */
 export default function createConstructorChampionshipCoupon (
-	placements: Placement[],
+	teamId: number,
+	rank: number,
+	ctx: CouponContext = {},
 ): Coupon<ConstructorChampionshipData> {
-	const [placement] = placements
-	if (!placement) {
-		throw new Error('Constructor Championship Wette benötigt genau eine Platzierung.')
-	}
-
 	return {
 		name: 'Constructor Championship Wette',
 		category: 'season',
 		schemaName: 'constructorChampionshipRank',
-		data: { placement },
+		data: {
+			placement: { team_id: teamId, position: rank },
+			...(ctx.seasonYear ? { season_year: ctx.seasonYear } : {}),
+		},
 	}
 }

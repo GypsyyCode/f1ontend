@@ -2,16 +2,16 @@
 	<v-container fluid class="mt-8 h-full flex items-center w-full flex-col grow">
 		<div class="flex flex-col grow w-full max-w-5xl mx-auto">
 			<v-container>
-				<v-card class="py-5 px-6 rounded-3xl" rounded="3xl" variant="flat">
+				<v-card class="py-5 px-6 shape-lg" variant="flat">
 					<div class="mb-4">
 						<div class="text-[10px] tracking-[0.3em] text-neutral-500">F1 TIPSPIEL · ÜBERSICHT</div>
 						<div class="text-xl font-bold">Startaufstellung</div>
-						<div v-if="latestSession" class="text-sm text-neutral-700 mt-1">
+						<div v-if="latestSession" class="text-body-medium text-neutral-700 mt-1">
 							<strong>{{ latestSession.country_name }}</strong>
 							<span class="text-neutral-500"> · {{ latestSession.session_name }}</span>
 							<span class="text-neutral-500"> · {{ formatSessionDate(latestSession.date_start) }}</span>
 						</div>
-						<div class="text-xs text-neutral-500 mt-1">
+						<div class="text-body-small text-neutral-500 mt-1">
 							Automatisch für die jüngste Session geladen; Session-Key manuell anpassbar.
 						</div>
 					</div>
@@ -50,14 +50,14 @@
 
 					<v-alert v-if="error" type="error" class="mb-4">{{ error }}</v-alert>
 
-					<div v-if="orderedEntries.length === 0 && !loading && !error" class="text-sm text-neutral-500 italic">
+					<div v-if="orderedEntries.length === 0 && !loading && !error" class="text-body-medium text-neutral-500 italic">
 						Noch keine Grid-Daten – Session-Key eintragen und "Synchronisieren" klicken.
 					</div>
 
 					<div v-else class="overflow-x-auto">
 						<table class="w-full border-separate border-spacing-y-1">
 							<thead>
-								<tr class="text-left text-xs tracking-[0.2em] text-neutral-500">
+								<tr class="text-left text-body-small tracking-[0.2em] text-neutral-500">
 									<th class="py-2 pr-3 w-14 text-center">POS.</th>
 									<th class="py-2 pr-3 w-16 text-center">#</th>
 									<th class="py-2 pr-3">FAHRER</th>
@@ -78,7 +78,7 @@
 											{{ entry.position ?? '–' }}
 										</span>
 									</td>
-									<td class="py-2 pr-3 text-center font-mono text-sm text-neutral-500">
+									<td class="py-2 pr-3 text-center font-mono text-body-medium text-neutral-500">
 										{{ entry.driver_number }}
 									</td>
 									<td class="py-2 pr-3">
@@ -89,7 +89,7 @@
 											{{ driverAcronym(entry.driver_number) }}
 										</div>
 									</td>
-									<td class="py-2 pr-3 text-right font-mono text-sm">
+									<td class="py-2 pr-3 text-right font-mono text-body-medium">
 										{{ formatLap(entry.lap_duration) }}
 									</td>
 								</tr>

@@ -10,26 +10,26 @@
 					style="border: 2px dashed #c0b89a; background: #fef9ec;"
 				>
 					<div class="text-[10px] tracking-[0.4em] text-neutral-500">F1 TIPSPIEL</div>
-					<div class="text-sm tracking-[0.3em] text-neutral-700 mt-1">★ {{ name.toUpperCase() }} ★</div>
+					<div class="text-body-medium tracking-[0.3em] text-neutral-700 mt-1">★ {{ name.toUpperCase() }} ★</div>
 					<v-icon icon="mdi-check-decagram" size="48" class="mt-5 text-green-700" />
 					<div class="text-2xl font-bold tracking-tight mt-3">{{ driver?.name ?? '—' }}</div>
 					<div class="mt-4 text-[10px] tracking-[0.3em] text-neutral-500">WETTSCHEIN-NR.</div>
-					<div class="font-sans text-xs tracking-wider text-neutral-800 break-all px-4">{{ createdId }}</div>
+					<div class="font-sans text-body-small tracking-wider text-neutral-800 break-all px-4">{{ createdId }}</div>
 					<div v-if="placedAt" class="text-[11px] font-sans text-neutral-600 mt-3">
 						ausgestellt am <strong>{{ placedAt }}</strong>
 					</div>
 				</v-card>
 
-				<v-card v-else class="py-6 px-6 rounded-3xl" rounded="3xl" variant="flat">
+				<v-card v-else class="py-6 px-6 shape-lg" variant="flat">
 					<div class="mb-1">
 						<div class="text-[10px] tracking-[0.3em] text-neutral-500">F1 TIPSPIEL</div>
 						<div class="text-xl font-bold">{{ name }}</div>
-						<div v-if="subtitle" class="text-sm text-neutral-500 mt-1">{{ subtitle }}</div>
+						<div v-if="subtitle" class="text-body-medium text-neutral-500 mt-1">{{ subtitle }}</div>
 					</div>
 
 					<div v-if="session" class="mt-3">
 						<div class="text-[10px] tracking-[0.3em] text-neutral-500">TIPP FÜR</div>
-						<div class="text-sm">
+						<div class="text-body-medium">
 							<strong>{{ session.country_name }}</strong>
 							<span class="text-neutral-500"> · {{ session.session_name }}</span>
 						</div>

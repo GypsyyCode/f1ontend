@@ -6,8 +6,8 @@
 					<div class="flex items-center justify-between mb-4">
 						<div>
 							<div class="text-[10px] tracking-[0.3em] text-neutral-500">F1 TIPSPIEL · PUNKTELISTE</div>
-							<div class="text-2xl font-mono mt-1">Rangliste</div>
-							<div v-if="session.session" class="text-sm text-neutral-600 mt-1">
+							<div class="text-headline-small font-mono mt-1">Rangliste</div>
+							<div v-if="session.session" class="text-body-medium text-neutral-600 mt-1">
 								Aktuelle Session:
 								<span class="font-semibold">{{ session.session.country_name }} · {{ session.session.session_name }}</span>
 							</div>
@@ -96,7 +96,7 @@
 							<div class="text-lg font-semibold mt-1 truncate">
 								{{ displayNameFor(row) }}
 							</div>
-							<div class="text-2xl mt-1">{{ row.total_score }} Pkt.</div>
+							<div class="text-headline-small mt-1">{{ row.total_score }} Pkt.</div>
 							<div class="text-[10px] text-neutral-800/60 mt-1">
 								{{ row.scored_bets }} gewertete Tipps
 							</div>
@@ -172,7 +172,7 @@
 			>
 				<div class="px-4 pt-2">
 					<div class="text-[10px] tracking-[0.3em] text-neutral-500">ADMIN · SAISON-SCORING</div>
-					<div class="text-sm">Saison <strong>{{ seasonStore.year }}</strong></div>
+					<div class="text-body-medium">Saison <strong>{{ seasonStore.year }}</strong></div>
 				</div>
 
 				<div class="px-4 mt-3 flex items-center gap-3">
@@ -184,14 +184,14 @@
 					>
 						Standings berechnen
 					</v-btn>
-					<span v-if="seasonResults?.computed_at" class="text-xs text-neutral-500">
+					<span v-if="seasonResults?.computed_at" class="text-body-small text-neutral-500">
 						Zuletzt berechnet: {{ formatDateTime(seasonResults.computed_at) }}
 					</span>
 				</div>
 
 				<div v-if="seasonResults" class="px-4 mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
 					<div>
-						<div class="text-xs tracking-widest text-neutral-500 mb-1">FAHRER-WM</div>
+						<div class="text-body-small tracking-widest text-neutral-500 mb-1">FAHRER-WM</div>
 						<v-list density="compact">
 							<v-list-item
 								v-for="(driverNumber, idx) in draftDrivers"
@@ -206,7 +206,7 @@
 						</v-list>
 					</div>
 					<div>
-						<div class="text-xs tracking-widest text-neutral-500 mb-1">KONSTRUKTEURS-WM</div>
+						<div class="text-body-small tracking-widest text-neutral-500 mb-1">KONSTRUKTEURS-WM</div>
 						<v-list density="compact">
 							<v-list-item
 								v-for="(teamId, idx) in draftConstructors"
@@ -227,7 +227,7 @@
 					<v-btn variant="tonal" :loading="seasonBusy" :disabled="seasonBusy || !draftDirty" @click="onSaveOverride">
 						Overrides speichern
 					</v-btn>
-					<span v-if="seasonResults.overridden_at" class="text-xs text-neutral-500">
+					<span v-if="seasonResults.overridden_at" class="text-body-small text-neutral-500">
 						Zuletzt overridden: {{ formatDateTime(seasonResults.overridden_at) }}
 					</span>
 				</div>
@@ -242,7 +242,7 @@
 					>
 						{{ seasonResults?.scored_at ? 'Saison-Scoring erneut auslösen' : 'Saison-Scoring auslösen' }}
 					</v-btn>
-					<span v-if="seasonResults?.scored_at" class="text-xs text-neutral-500">
+					<span v-if="seasonResults?.scored_at" class="text-body-small text-neutral-500">
 						Zuletzt gescored: {{ formatDateTime(seasonResults.scored_at) }}
 					</span>
 				</div>

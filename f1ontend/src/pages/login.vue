@@ -1,7 +1,7 @@
 <template>
 	<v-container fluid class="mt-8 h-full flex items-center w-full flex-col grow">
 		<div class="w-full max-w-md mx-auto">
-			<v-card class="py-6 px-6 rounded-3xl" rounded="3xl" variant="flat">
+			<v-card class="py-6 px-6 shape-lg" variant="flat">
 				<div class="text-[10px] tracking-[0.3em] text-neutral-500">F1 TIPSPIEL</div>
 				<div class="text-2xl font-bold mb-4">{{ mode === 'login' ? 'Anmelden' : 'Registrieren' }}</div>
 

@@ -2,7 +2,7 @@
 	<v-card v-if="!createdId" class="custom-height py-3 shape-lg" variant="flat">
 		<div v-if="firstSession" class="px-4 pt-4">
 			<div class="text-[10px] tracking-[0.3em] text-neutral-500">TIPP FÜR SAISON</div>
-			<div class="text-sm">
+			<div class="text-body-medium">
 				<strong>{{ year }}</strong>
 				<span class="text-neutral-500"> · Start am {{ formatDate(firstSession.date_start) }}</span>
 			</div>
@@ -47,8 +47,8 @@
 	</v-card>
 
 	<v-card v-else class="custom-height py-3 shape-lg text-center" variant="flat">
-		<div class="text-sm text-neutral-500">Wette platziert · {{ formatDateTime(placedAt!) }}</div>
-		<div class="text-xs">ID: {{ createdId }}</div>
+		<div class="text-body-medium text-neutral-500">Wette platziert · {{ formatDateTime(placedAt!) }}</div>
+		<div class="text-body-small">ID: {{ createdId }}</div>
 		<v-btn variant="plain" @click="reset">Neue Wette</v-btn>
 	</v-card>
 </template>

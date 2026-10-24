@@ -2,7 +2,7 @@
 	<v-container fluid class="mt-8 h-full flex items-center w-full flex-col grow">
 		<div class="flex flex-col grow w-full max-w-5xl mx-auto gap-6">
 			<!-- Saison-Fahrer / Hero -->
-			<v-card class="py-6 px-6 rounded-3xl" rounded="3xl" variant="flat">
+			<v-card class="py-6 px-6 shape-lg" variant="flat">
 				<div class="text-[10px] tracking-[0.3em] text-neutral-500">F1 TIPSPIEL · MEIN FAHRER</div>
 
 				<div v-if="driverName && !editDriver" class="flex items-center gap-5 mt-4">
@@ -30,7 +30,7 @@
 			</v-card>
 
 			<!-- Session-Platzierungstipp -->
-			<v-card class="py-6 px-6 rounded-3xl" rounded="3xl" variant="flat">
+			<v-card class="py-6 px-6 shape-lg" variant="flat">
 				<div class="text-xl font-bold mb-1">Platzierungs-Tipp</div>
 
 				<div v-if="!driverId" class="text-sm text-neutral-500">
@@ -93,7 +93,7 @@
 			</v-card>
 
 			<!-- Saison-Verlauf (Punkte folgen mit dem Backend-Scoring) -->
-			<v-card class="py-5 px-6 rounded-3xl" rounded="3xl" variant="flat">
+			<v-card class="py-5 px-6 shape-lg" variant="flat">
 				<div class="text-xl font-bold mb-1">Saison-Verlauf</div>
 				<div class="text-sm text-neutral-500">
 					Pro Session: Tipp → Ergebnis → Punkte. Die Punkte erscheinen hier, sobald das

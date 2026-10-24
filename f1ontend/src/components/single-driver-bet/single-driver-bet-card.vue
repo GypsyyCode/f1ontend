@@ -20,7 +20,7 @@
 					</div>
 				</v-card>
 
-				<v-card v-else class="py-6 px-6 rounded-3xl" rounded="3xl" variant="flat">
+				<v-card v-else class="py-6 px-6 shape-lg" variant="flat">
 					<div class="mb-1">
 						<div class="text-[10px] tracking-[0.3em] text-neutral-500">F1 TIPSPIEL</div>
 						<div class="text-xl font-bold">{{ name }}</div>

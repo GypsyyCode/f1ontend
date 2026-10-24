@@ -2,7 +2,7 @@
 	<v-container fluid class="mt-8 h-full flex items-center w-full flex-col grow">
 		<div class="flex flex-col grow w-full max-w-5xl mx-auto">
 			<v-container>
-				<v-card class="flex flex-col custom-height py-5 px-6 rounded-3xl" rounded="3xl" variant="flat">
+				<v-card class="flex flex-col custom-height py-5 px-6 shape-lg" variant="flat">
 					<div class="flex items-center justify-between mb-4">
 						<div>
 							<div class="text-[10px] tracking-[0.3em] text-neutral-500">F1 TIPSPIEL · ÜBERSICHT</div>

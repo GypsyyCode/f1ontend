@@ -13,7 +13,7 @@
 					:placed-at="placedAt"
 				/>
 
-				<v-card v-if="!createdId" class="h-full grow flex flex-col custom-height py-3 shape-lg transition-[border-radius] hover:rounded-lg" rounded="3xl" variant="flat">
+				<v-card v-if="!createdId" class="h-full grow flex flex-col custom-height py-3 shape-lg transition-[border-radius] hover:rounded-lg" variant="flat">
 					<div v-if="session" class="px-4 pt-4">
 						<div class="text-[10px] tracking-[0.3em] text-neutral-500">TIPP FÜR</div>
 						<div class="text-sm">

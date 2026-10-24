@@ -310,8 +310,11 @@ async function load () {
 
 onMounted(async () => {
 	if (!session.session) await session.loadLatest()
-	await load()
-	await loadSeason()
+	const tasks: Promise<unknown>[] = [load()]
+	if (auth.player?.role === 'admin') {
+		tasks.push(loadSeason())
+	}
+	await Promise.all(tasks)
 })
 
 watch(scope, load)
@@ -403,16 +406,20 @@ const draftDirty = computed(() => {
 async function loadSeason () {
 	seasonError.value = null
 	await seasonStore.loadCurrent()
-	const [sr, tm, dr] = await Promise.all([
-		getSeasonResults(seasonStore.year),
-		listTeams(),
-		listDrivers(),
-	])
-	teams.value = tm
-	drivers.value = dr
-	seasonResults.value = sr
-	draftDrivers.value = sr ? [...sr.driver_standings] : []
-	draftConstructors.value = sr ? [...sr.constructor_standings] : []
+	try {
+		const [sr, tm, dr] = await Promise.all([
+			getSeasonResults(seasonStore.year),
+			listTeams(),
+			listDrivers(),
+		])
+		teams.value = tm
+		drivers.value = dr
+		seasonResults.value = sr
+		draftDrivers.value = sr ? [...sr.driver_standings] : []
+		draftConstructors.value = sr ? [...sr.constructor_standings] : []
+	} catch (e) {
+		seasonError.value = e instanceof Error ? e.message : String(e)
+	}
 }
 
 function driverNameOf (driverNumber: number): string {
@@ -472,6 +479,8 @@ async function onSaveOverride () {
 			constructor_standings: draftConstructors.value,
 		}, auth.token)
 		seasonResults.value = sr
+		draftDrivers.value = [...sr.driver_standings]
+		draftConstructors.value = [...sr.constructor_standings]
 		seasonInfo.value = 'Overrides gespeichert.'
 	} catch (e) {
 		seasonError.value = e instanceof Error ? e.message : String(e)
@@ -488,8 +497,16 @@ async function onScore () {
 	try {
 		const res = await triggerSeasonScoring(seasonStore.year, auth.token)
 		seasonInfo.value = `${res.scored_coupons} Season-Coupons gescored für ${res.season_year}.`
-		await load()
-		seasonResults.value = await getSeasonResults(seasonStore.year)
+		try {
+			await load()
+		} catch (e) {
+			seasonError.value = `Leaderboard konnte nicht neu geladen werden: ${e instanceof Error ? e.message : String(e)}`
+		}
+		try {
+			seasonResults.value = await getSeasonResults(seasonStore.year)
+		} catch (e) {
+			seasonError.value = `Season-Ergebnisse konnten nicht neu gelesen werden: ${e instanceof Error ? e.message : String(e)}`
+		}
 	} catch (e) {
 		seasonError.value = e instanceof Error ? e.message : String(e)
 	} finally {

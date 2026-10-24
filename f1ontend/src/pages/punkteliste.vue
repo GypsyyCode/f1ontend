@@ -164,6 +164,93 @@
 					</v-dialog>
 				</v-card>
 			</v-container>
+
+			<v-card
+				v-if="auth.player?.role === 'admin'"
+				class="custom-height py-3 rounded-3xl mt-6"
+				rounded="3xl"
+				variant="flat"
+			>
+				<div class="px-4 pt-2">
+					<div class="text-[10px] tracking-[0.3em] text-neutral-500">ADMIN · SAISON-SCORING</div>
+					<div class="text-sm">Saison <strong>{{ seasonStore.year }}</strong></div>
+				</div>
+
+				<div class="px-4 mt-3 flex items-center gap-3">
+					<v-btn
+						variant="tonal"
+						:loading="seasonBusy"
+						:disabled="seasonBusy"
+						@click="onCompute"
+					>
+						Standings berechnen
+					</v-btn>
+					<span v-if="seasonResults?.computed_at" class="text-xs text-neutral-500">
+						Zuletzt berechnet: {{ formatDateTime(seasonResults.computed_at) }}
+					</span>
+				</div>
+
+				<div v-if="seasonResults" class="px-4 mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+					<div>
+						<div class="text-xs tracking-widest text-neutral-500 mb-1">FAHRER-WM</div>
+						<v-list density="compact">
+							<v-list-item
+								v-for="(driverNumber, idx) in draftDrivers"
+								:key="`drv-${driverNumber}`"
+								:title="`${idx + 1}. #${driverNumber} ${driverNameOf(driverNumber)}`"
+							>
+								<template #append>
+									<v-btn icon="mdi-arrow-up" variant="text" size="x-small" :disabled="idx === 0" @click="moveDriver(idx, -1)" />
+									<v-btn icon="mdi-arrow-down" variant="text" size="x-small" :disabled="idx === draftDrivers.length - 1" @click="moveDriver(idx, 1)" />
+								</template>
+							</v-list-item>
+						</v-list>
+					</div>
+					<div>
+						<div class="text-xs tracking-widest text-neutral-500 mb-1">KONSTRUKTEURS-WM</div>
+						<v-list density="compact">
+							<v-list-item
+								v-for="(teamId, idx) in draftConstructors"
+								:key="`cst-${teamId}`"
+								:title="`${idx + 1}. ${teamNameOf(teamId)}`"
+							>
+								<template #append>
+									<v-btn icon="mdi-arrow-up" variant="text" size="x-small" :disabled="idx === 0" @click="moveTeam(idx, -1)" />
+									<v-btn icon="mdi-arrow-down" variant="text" size="x-small" :disabled="idx === draftConstructors.length - 1" @click="moveTeam(idx, 1)" />
+								</template>
+							</v-list-item>
+						</v-list>
+					</div>
+				</div>
+
+				<div v-if="seasonResults" class="px-4 mt-3 flex items-center gap-3">
+					<v-btn variant="plain" :disabled="seasonBusy || !draftDirty" @click="onResetDraft">Reset</v-btn>
+					<v-btn variant="tonal" :loading="seasonBusy" :disabled="seasonBusy || !draftDirty" @click="onSaveOverride">
+						Overrides speichern
+					</v-btn>
+					<span v-if="seasonResults.overridden_at" class="text-xs text-neutral-500">
+						Zuletzt overridden: {{ formatDateTime(seasonResults.overridden_at) }}
+					</span>
+				</div>
+
+				<div class="px-4 mt-4 flex items-center gap-3">
+					<v-btn
+						color="primary"
+						class="bg-taupe-500 text-taupe-100"
+						:loading="seasonBusy"
+						:disabled="seasonBusy || !seasonResults"
+						@click="onScore"
+					>
+						{{ seasonResults?.scored_at ? 'Saison-Scoring erneut auslösen' : 'Saison-Scoring auslösen' }}
+					</v-btn>
+					<span v-if="seasonResults?.scored_at" class="text-xs text-neutral-500">
+						Zuletzt gescored: {{ formatDateTime(seasonResults.scored_at) }}
+					</span>
+				</div>
+
+				<v-alert v-if="seasonError" type="error" class="mt-3 mx-4">{{ seasonError }}</v-alert>
+				<v-alert v-if="seasonInfo" type="success" class="mt-3 mx-4">{{ seasonInfo }}</v-alert>
+			</v-card>
 		</div>
 	</v-container>
 </template>
@@ -174,6 +261,17 @@ import { computeAggregates, getLeaderboard, setDriverOfTheDay, triggerScoring, t
 import { positionColors } from '@/plugins/coupons/positionColors'
 import { useAuthStore } from '@/stores/auth'
 import { useSessionStore } from '@/stores/session'
+import {
+	computeSeasonResults,
+	getSeasonResults,
+	listTeams,
+	overrideSeasonResults,
+	triggerSeasonScoring,
+	type SeasonResults,
+	type Team,
+} from '@/plugins/season'
+import { listDrivers, type DriverInfo } from '@/plugins/drivers'
+import { useSeasonStore } from '@/stores/season'
 
 const auth = useAuthStore()
 const session = useSessionStore()
@@ -213,6 +311,7 @@ async function load () {
 onMounted(async () => {
 	if (!session.session) await session.loadLatest()
 	await load()
+	await loadSeason()
 })
 
 watch(scope, load)
@@ -278,5 +377,128 @@ async function submitDotd () {
 	} finally {
 		settingDotd.value = false
 	}
+}
+
+// ── Season-Scoring Admin ─────────────────────────────────────────────────────
+
+const seasonStore = useSeasonStore()
+const seasonResults = ref<SeasonResults | null>(null)
+const draftDrivers = ref<number[]>([])
+const draftConstructors = ref<number[]>([])
+const teams = ref<Team[]>([])
+const drivers = ref<DriverInfo[]>([])
+const seasonBusy = ref(false)
+const seasonError = ref<string | null>(null)
+const seasonInfo = ref<string | null>(null)
+
+const draftDirty = computed(() => {
+	if (!seasonResults.value) return false
+	const a = seasonResults.value.driver_standings
+	const b = seasonResults.value.constructor_standings
+	if (draftDrivers.value.length !== a.length || draftConstructors.value.length !== b.length) return true
+	return draftDrivers.value.some((d, i) => d !== a[i])
+		|| draftConstructors.value.some((c, i) => c !== b[i])
+})
+
+async function loadSeason () {
+	seasonError.value = null
+	await seasonStore.loadCurrent()
+	const [sr, tm, dr] = await Promise.all([
+		getSeasonResults(seasonStore.year),
+		listTeams(),
+		listDrivers(),
+	])
+	teams.value = tm
+	drivers.value = dr
+	seasonResults.value = sr
+	draftDrivers.value = sr ? [...sr.driver_standings] : []
+	draftConstructors.value = sr ? [...sr.constructor_standings] : []
+}
+
+function driverNameOf (driverNumber: number): string {
+	const d = drivers.value.find(x => x.driver_number === driverNumber)
+	return d ? `${d.first_name} ${d.last_name}` : `Fahrer #${driverNumber}`
+}
+function teamNameOf (teamId: number): string {
+	const t = teams.value.find(x => x.id === teamId)
+	return t ? t.team_name : `Team #${teamId}`
+}
+function moveDriver (idx: number, delta: number) {
+	const target = idx + delta
+	if (target < 0 || target >= draftDrivers.value.length) return
+	const next = [...draftDrivers.value]
+	;[next[idx], next[target]] = [next[target], next[idx]]
+	draftDrivers.value = next
+}
+function moveTeam (idx: number, delta: number) {
+	const target = idx + delta
+	if (target < 0 || target >= draftConstructors.value.length) return
+	const next = [...draftConstructors.value]
+	;[next[idx], next[target]] = [next[target], next[idx]]
+	draftConstructors.value = next
+}
+function onResetDraft () {
+	if (!seasonResults.value) return
+	draftDrivers.value = [...seasonResults.value.driver_standings]
+	draftConstructors.value = [...seasonResults.value.constructor_standings]
+}
+
+async function onCompute () {
+	if (!auth.token) return
+	seasonBusy.value = true
+	seasonError.value = null
+	seasonInfo.value = null
+	try {
+		const sr = await computeSeasonResults(seasonStore.year, auth.token)
+		seasonResults.value = sr
+		draftDrivers.value = [...sr.driver_standings]
+		draftConstructors.value = [...sr.constructor_standings]
+		seasonInfo.value = `Standings für ${sr.season_year} berechnet (${sr.driver_standings.length} Fahrer, ${sr.constructor_standings.length} Teams).`
+	} catch (e) {
+		seasonError.value = e instanceof Error ? e.message : String(e)
+	} finally {
+		seasonBusy.value = false
+	}
+}
+
+async function onSaveOverride () {
+	if (!auth.token) return
+	seasonBusy.value = true
+	seasonError.value = null
+	seasonInfo.value = null
+	try {
+		const sr = await overrideSeasonResults(seasonStore.year, {
+			driver_standings: draftDrivers.value,
+			constructor_standings: draftConstructors.value,
+		}, auth.token)
+		seasonResults.value = sr
+		seasonInfo.value = 'Overrides gespeichert.'
+	} catch (e) {
+		seasonError.value = e instanceof Error ? e.message : String(e)
+	} finally {
+		seasonBusy.value = false
+	}
+}
+
+async function onScore () {
+	if (!auth.token) return
+	seasonBusy.value = true
+	seasonError.value = null
+	seasonInfo.value = null
+	try {
+		const res = await triggerSeasonScoring(seasonStore.year, auth.token)
+		seasonInfo.value = `${res.scored_coupons} Season-Coupons gescored für ${res.season_year}.`
+		await load()
+		seasonResults.value = await getSeasonResults(seasonStore.year)
+	} catch (e) {
+		seasonError.value = e instanceof Error ? e.message : String(e)
+	} finally {
+		seasonBusy.value = false
+	}
+}
+
+function formatDateTime (iso?: string): string {
+	if (!iso) return ''
+	return new Date(iso).toLocaleString('de-DE')
 }
 </script>

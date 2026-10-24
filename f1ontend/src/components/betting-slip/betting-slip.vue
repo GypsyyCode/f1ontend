@@ -3,10 +3,10 @@
 		<!-- Header -->
 		<header class="px-6 pt-6 pb-4 text-center">
 			<div class="text-[10px] tracking-[0.4em] text-neutral-500">F1 TIPSPIEL</div>
-			<div class="text-sm tracking-[0.3em] text-neutral-700 mt-1">★ WETTSCHEIN ★</div>
+			<div class="text-body-medium tracking-[0.3em] text-neutral-700 mt-1">★ WETTSCHEIN ★</div>
 			<div class="text-2xl font-bold tracking-tight mt-3">{{ title }}</div>
 			<div class="mt-3 text-[10px] tracking-[0.3em] text-neutral-500">WETTSCHEIN-NR.</div>
-			<div class="font-sans text-sm tracking-wider text-neutral-800 break-all px-4">
+			<div class="font-sans text-body-medium tracking-wider text-neutral-800 break-all px-4">
 				{{ couponId }}
 			</div>
 		</header>
@@ -32,7 +32,7 @@
 					<div class="text-[10px] tracking-[0.3em] text-neutral-500">POS. {{ i + 1 }}</div>
 					<div class="text-lg font-bold truncate leading-tight">{{ pick.name }}</div>
 				</div>
-				<div class="text-xs text-neutral-500 font-sans tabular-nums">#{{ pick.driver_id }}</div>
+				<div class="text-body-small text-neutral-500 font-sans tabular-nums">#{{ pick.driver_id }}</div>
 			</li>
 		</ul>
 

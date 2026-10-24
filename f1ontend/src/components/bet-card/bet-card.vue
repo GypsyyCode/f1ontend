@@ -16,7 +16,7 @@
 				<v-card v-if="!createdId" class="h-full grow flex flex-col custom-height py-3 shape-lg transition-[border-radius] hover:rounded-lg" variant="flat">
 					<div v-if="session" class="px-4 pt-4">
 						<div class="text-[10px] tracking-[0.3em] text-neutral-500">TIPP FÜR</div>
-						<div class="text-sm">
+						<div class="text-body-medium">
 							<strong>{{ session.country_name }}</strong>
 							<span class="text-neutral-500"> · {{ session.session_name }}</span>
 						</div>

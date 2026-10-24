@@ -18,7 +18,7 @@
 
 				<div v-else class="mt-4">
 					<div class="text-xl font-bold mb-1">Wähle deinen Saison-Fahrer</div>
-					<div class="text-sm text-neutral-500 mb-4">
+					<div class="text-body-medium text-neutral-500 mb-4">
 						Auf diesen Fahrer tippst du die ganze Saison über – Session für Session.
 					</div>
 					<DriverSelect
@@ -33,14 +33,14 @@
 			<v-card class="py-6 px-6 shape-lg" variant="flat">
 				<div class="text-xl font-bold mb-1">Platzierungs-Tipp</div>
 
-				<div v-if="!driverId" class="text-sm text-neutral-500">
+				<div v-if="!driverId" class="text-body-medium text-neutral-500">
 					Wähle zuerst oben deinen Saison-Fahrer.
 				</div>
 
 				<template v-else>
 					<div v-if="session" class="mb-3">
 						<div class="text-[10px] tracking-[0.3em] text-neutral-500">TIPP FÜR</div>
-						<div class="text-sm">
+						<div class="text-body-medium">
 							<strong>{{ session.country_name }}</strong>
 							<span class="text-neutral-500"> · {{ session.session_name }}</span>
 						</div>
@@ -57,11 +57,11 @@
 						style="border: 2px dashed #c0b89a; background: #fef9ec;"
 					>
 						<v-icon icon="mdi-check-decagram" size="40" class="text-green-700" />
-						<div class="mt-2 text-sm">
+						<div class="mt-2 text-body-medium">
 							Tipp: <strong>{{ driverName }}</strong> wird <strong>P{{ position }}</strong>
 						</div>
 						<div class="mt-3 text-[10px] tracking-[0.3em] text-neutral-500">WETTSCHEIN-NR.</div>
-						<div class="font-sans text-xs tracking-wider text-neutral-800 break-all">{{ createdId }}</div>
+						<div class="font-sans text-body-small tracking-wider text-neutral-800 break-all">{{ createdId }}</div>
 						<div v-if="placedAt" class="text-[11px] font-sans text-neutral-600 mt-2">
 							ausgestellt am <strong>{{ placedAt }}</strong>
 						</div>
@@ -69,7 +69,7 @@
 
 					<!-- Platzierungs-Dial -->
 					<template v-else>
-						<div class="text-sm text-neutral-500 mb-2">
+						<div class="text-body-medium text-neutral-500 mb-2">
 							Auf welcher Position landet <strong>{{ driverName }}</strong>?
 						</div>
 						<div class="flex items-center gap-4">
@@ -95,7 +95,7 @@
 			<!-- Saison-Verlauf (Punkte folgen mit dem Backend-Scoring) -->
 			<v-card class="py-5 px-6 shape-lg" variant="flat">
 				<div class="text-xl font-bold mb-1">Saison-Verlauf</div>
-				<div class="text-sm text-neutral-500">
+				<div class="text-body-medium text-neutral-500">
 					Pro Session: Tipp → Ergebnis → Punkte. Die Punkte erscheinen hier, sobald das
 					Backend die Session gewertet hat (exakt = 3, ±1 = 1, sonst 0).
 				</div>

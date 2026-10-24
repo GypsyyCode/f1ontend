@@ -7,7 +7,7 @@
 						<div>
 							<div class="text-[10px] tracking-[0.3em] text-neutral-500">F1 TIPSPIEL · ÜBERSICHT</div>
 							<div class="text-xl font-bold">Dein Wettschein</div>
-							<div class="text-xs text-neutral-500 mt-1">
+							<div class="text-body-small text-neutral-500 mt-1">
 								Zeile anklicken, um den jeweiligen Wettschein anzuzeigen.
 							</div>
 						</div>
@@ -28,13 +28,13 @@
 						<table class="matrix w-full border-separate border-spacing-1">
 							<thead>
 								<tr>
-									<th class="text-left text-xs tracking-[0.2em] text-neutral-500 font-normal pr-3">
+									<th class="text-left text-body-small tracking-[0.2em] text-neutral-500 font-normal pr-3">
 										WETTART
 									</th>
 									<th
 										v-for="n in 10"
 										:key="n"
-										class="text-center text-xs text-neutral-500 font-mono w-12"
+										class="text-center text-body-small text-neutral-500 font-mono w-12"
 									>
 										{{ n }}
 									</th>
@@ -125,12 +125,12 @@
 					style="border: 2px dashed #c0b89a; background: #fef9ec;"
 				>
 					<div class="text-[10px] tracking-[0.4em] text-neutral-500">F1 TIPSPIEL</div>
-					<div class="text-sm tracking-[0.3em] text-neutral-700 mt-1">★ WETTSCHEIN ★</div>
+					<div class="text-body-medium tracking-[0.3em] text-neutral-700 mt-1">★ WETTSCHEIN ★</div>
 					<div class="text-2xl font-bold tracking-tight mt-3">
 						{{ selectedRow.name }} Wette
 					</div>
 					<v-icon icon="mdi-ticket-confirmation-outline" size="48" class="mt-6 text-neutral-400" />
-					<div class="mt-3 text-sm text-neutral-500">
+					<div class="mt-3 text-body-medium text-neutral-500">
 						Noch keine Wette platziert.
 					</div>
 				</v-card>

@@ -9,16 +9,21 @@
 			width="260"
 			color="surface-container"
 		>
-			<div class="px-5 pt-5 pb-3">
-				<div class="text-label-small tracking-[0.3em] text-on-surface-variant">F1 TIPSPIEL</div>
-				<div class="text-title-large font-bold mt-1">Wetten</div>
+			<div class="px-5 pt-5 pb-3 flex items-center gap-3">
+				<div class="logo-mark">
+					<v-icon icon="mdi-flag-checkered" size="22" color="on-primary" />
+				</div>
+				<div class="min-w-0">
+					<div class="text-label-small tracking-[0.3em] text-on-surface-variant">F1 TIPSPIEL</div>
+					<div class="text-title-large font-bold mt-1 truncate">Wetten</div>
+				</div>
 			</div>
 
-			<v-divider />
+			<v-divider color="primary" :opacity="0.4" />
 
-			<v-list nav>
+			<v-list nav color="primary-container" class="mt-2">
 				<template v-for="group in navGroups" :key="group.title">
-					<v-list-subheader class="text-title-small">{{ group.title }}</v-list-subheader>
+					<v-list-subheader class="nav-subheader">{{ group.title }}</v-list-subheader>
 					<v-list-item
 						v-for="item in group.items"
 						:key="item.to"
@@ -29,9 +34,9 @@
 					/>
 				</template>
 
-				<v-divider class="my-2" />
+				<v-divider color="primary" :opacity="0.3" class="my-3" />
 
-				<v-list-subheader class="text-title-small">Übersicht</v-list-subheader>
+				<v-list-subheader class="nav-subheader">Übersicht</v-list-subheader>
 				<v-list-item
 					to="/wettschein"
 					prepend-icon="mdi-grid"
@@ -104,3 +109,26 @@ const navGroups = [
 	},
 ]
 </script>
+
+<style scoped>
+.logo-mark {
+	width: 36px;
+	height: 36px;
+	border-radius: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgb(var(--v-theme-primary));
+	flex-shrink: 0;
+}
+
+.nav-subheader {
+	font-size: 11px;
+	line-height: 16px;
+	font-weight: 500;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+	color: rgb(var(--v-theme-on-surface-variant));
+	opacity: 0.9;
+}
+</style>

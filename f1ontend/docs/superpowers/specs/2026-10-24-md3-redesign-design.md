@@ -273,3 +273,7 @@ Jeder Schritt ist eigenständig deploybar; falls Phase 4 ins Stocken gerät, ble
 - Entscheidung, ob die MD3-Palette-Generation einmalig lokal läuft (Script in `scripts/`) oder als Build-Step — pragmatisch für Phase 1: einmalig lokal, Ergebnis einchecken.
 - Preset-Namen in UI: aktuell technisch (`racing-green`), eventuell Lokalisierung über `i18n.ts` nötig.
 - Eventuell weitere Presets später („Monaco-White", „Monza-Red") — Switcher-UI muss auf > 4 skalieren können (Grid statt feste Zeile).
+
+---
+
+> **Status:** umgesetzt gemäß `docs/superpowers/plans/2026-10-24-md3-redesign.md`.

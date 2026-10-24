@@ -10,3 +10,9 @@ export type PodiumDriver = {
 	driver_id: number
 	name: string
 }
+
+/** Team-Pick für die Konstrukteurs-Championship. */
+export type TeamPick = {
+	team_id: number
+	name: string
+}

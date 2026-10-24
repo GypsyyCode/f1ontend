@@ -49,6 +49,11 @@ export const useThemeStore = defineStore('theme', () => {
 	}
 
 	function init () {
+		if (mediaCleanup) {
+			mediaCleanup()
+			mediaCleanup = null
+		}
+
 		if (!isPresetName(preset.value)) preset.value = 'f1-red'
 		if (!isThemeMode(mode.value))    mode.value = 'system'
 

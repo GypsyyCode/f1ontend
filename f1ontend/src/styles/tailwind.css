@@ -3,75 +3,142 @@
 @import "tailwindcss/utilities" layer(tailwind-utilities);
 
 @theme {
-  --font-heading: "Roboto", sans-serif;
-  --font-body: "Roboto", sans-serif;
-  --font-mono: "Roboto Mono", monospace;
+	--font-heading: "Roboto", sans-serif;
+	--font-body: "Roboto", sans-serif;
+	--font-mono: "Roboto Mono", monospace;
 
-  --color-background: rgb(var(--v-theme-background));
-  --color-surface: rgb(var(--v-theme-surface));
-  --color-on-surface: rgb(var(--v-theme-on-surface));
+	/* MD3 role colors — gespeist aus Vuetify's --v-theme-* Variablen,
+	   damit ein Theme-Wechsel automatisch alle Tailwind-Utilities neu
+	   bindet. */
+	--color-background:                 rgb(var(--v-theme-background));
+	--color-on-background:              rgb(var(--v-theme-on-background));
+	--color-surface:                    rgb(var(--v-theme-surface));
+	--color-on-surface:                 rgb(var(--v-theme-on-surface));
+	--color-surface-variant:            rgb(var(--v-theme-surface-variant));
+	--color-on-surface-variant:         rgb(var(--v-theme-on-surface-variant));
+	--color-surface-container-lowest:   rgb(var(--v-theme-surface-container-lowest));
+	--color-surface-container-low:      rgb(var(--v-theme-surface-container-low));
+	--color-surface-container:          rgb(var(--v-theme-surface-container));
+	--color-surface-container-high:     rgb(var(--v-theme-surface-container-high));
+	--color-surface-container-highest:  rgb(var(--v-theme-surface-container-highest));
 
-  --color-primary: rgb(var(--v-theme-primary));
-  --color-success: rgb(var(--v-theme-success));
-  --color-info: rgb(var(--v-theme-info));
-  --color-warning: rgb(var(--v-theme-warning));
-  --color-error: rgb(var(--v-theme-error));
+	--color-primary:                    rgb(var(--v-theme-primary));
+	--color-on-primary:                 rgb(var(--v-theme-on-primary));
+	--color-primary-container:          rgb(var(--v-theme-primary-container));
+	--color-on-primary-container:       rgb(var(--v-theme-on-primary-container));
 
-  --breakpoint-*: initial;
-  --breakpoint-xs: 0px;
-  --breakpoint-sm: 600px;
-  --breakpoint-md: 840px;
-  --breakpoint-lg: 1145px;
-  --breakpoint-xl: 1545px;
-  --breakpoint-xxl: 2138px;
+	--color-secondary:                  rgb(var(--v-theme-secondary));
+	--color-on-secondary:               rgb(var(--v-theme-on-secondary));
+	--color-secondary-container:        rgb(var(--v-theme-secondary-container));
+	--color-on-secondary-container:     rgb(var(--v-theme-on-secondary-container));
+
+	--color-tertiary:                   rgb(var(--v-theme-tertiary));
+	--color-on-tertiary:                rgb(var(--v-theme-on-tertiary));
+	--color-tertiary-container:         rgb(var(--v-theme-tertiary-container));
+	--color-on-tertiary-container:      rgb(var(--v-theme-on-tertiary-container));
+
+	--color-error:                      rgb(var(--v-theme-error));
+	--color-on-error:                   rgb(var(--v-theme-on-error));
+	--color-error-container:            rgb(var(--v-theme-error-container));
+	--color-on-error-container:         rgb(var(--v-theme-on-error-container));
+
+	--color-outline:                    rgb(var(--v-theme-outline));
+	--color-outline-variant:            rgb(var(--v-theme-outline-variant));
+
+	--color-success:                    rgb(var(--v-theme-success));
+	--color-info:                       rgb(var(--v-theme-info));
+	--color-warning:                    rgb(var(--v-theme-warning));
+
+	--breakpoint-*: initial;
+	--breakpoint-xs: 0px;
+	--breakpoint-sm: 600px;
+	--breakpoint-md: 840px;
+	--breakpoint-lg: 1145px;
+	--breakpoint-xl: 1545px;
+	--breakpoint-xxl: 2138px;
 }
 
-@custom-variant light (&:where(.v-theme--light, .v-theme--light *));
-@custom-variant dark (&:where(.v-theme--dark, .v-theme--dark *));
+@custom-variant light (&:where(.v-theme--f1-red-light, .v-theme--taupe-light, .v-theme--racing-green-light, .v-theme--midnight-light, .v-theme--f1-red-light *, .v-theme--taupe-light *, .v-theme--racing-green-light *, .v-theme--midnight-light *));
+@custom-variant dark  (&:where(.v-theme--f1-red-dark,  .v-theme--taupe-dark,  .v-theme--racing-green-dark,  .v-theme--midnight-dark,  .v-theme--f1-red-dark *,  .v-theme--taupe-dark *,  .v-theme--racing-green-dark *,  .v-theme--midnight-dark *));
 
-/* safelist to ensure variables are always available */
 @source inline('font-heading');
 @source inline('font-body');
 @source inline('font-mono');
 
 /*
-  note: adopt and extend values from TailwindCSS
+  Shape — MD3-Scale (Mixed, Entscheidung D aus Frage 9).
+  Rolle → Utility:
+     Cards:   shape-lg (16px)
+     Dialog:  shape-xl (28px)
+     Buttons: rounded-pill (bestehend)
+     Chips:   rounded-pill
+     Inputs:  shape-xs (4px)
 */
+@utility shape-none { border-radius: 0 }
+@utility shape-xs   { border-radius: 4px }
+@utility shape-sm   { border-radius: 8px }
+@utility shape-md   { border-radius: 12px }
+@utility shape-lg   { border-radius: 16px }
+@utility shape-xl   { border-radius: 28px }
+@utility shape-full { border-radius: 9999px }
+
 @utility rounded-pill   { border-radius: 9999px }
 @utility rounded-circle { border-radius: 50%    }
 @utility rounded-shaped { border-radius: 24px 0 }
 
-@source inline('rounded'); /* .25rem */
+@source inline('rounded');
 @source inline('rounded-{none,sm,md,lg,xl,2xl,3xl,full,pill,circle,shaped}');
+@source inline('shape-{none,xs,sm,md,lg,xl,full}');
+
+/*
+  MD3 Type-Scale — Roboto.
+  Verwendung: <h1 class="text-headline-large">...</h1>
+*/
+@utility text-display-large    { font-size: 57px; line-height: 64px; font-weight: 400; letter-spacing: -0.25px }
+@utility text-display-medium   { font-size: 45px; line-height: 52px; font-weight: 400; letter-spacing: 0 }
+@utility text-display-small    { font-size: 36px; line-height: 44px; font-weight: 400; letter-spacing: 0 }
+@utility text-headline-large   { font-size: 32px; line-height: 40px; font-weight: 400; letter-spacing: 0 }
+@utility text-headline-medium  { font-size: 28px; line-height: 36px; font-weight: 400; letter-spacing: 0 }
+@utility text-headline-small   { font-size: 24px; line-height: 32px; font-weight: 400; letter-spacing: 0 }
+@utility text-title-large      { font-size: 22px; line-height: 28px; font-weight: 500; letter-spacing: 0 }
+@utility text-title-medium     { font-size: 16px; line-height: 24px; font-weight: 500; letter-spacing: 0.15px }
+@utility text-title-small      { font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: 0.1px }
+@utility text-body-large       { font-size: 16px; line-height: 24px; font-weight: 400; letter-spacing: 0.5px }
+@utility text-body-medium      { font-size: 14px; line-height: 20px; font-weight: 400; letter-spacing: 0.25px }
+@utility text-body-small       { font-size: 12px; line-height: 16px; font-weight: 400; letter-spacing: 0.4px }
+@utility text-label-large      { font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: 0.1px }
+@utility text-label-medium     { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.5px }
+@utility text-label-small      { font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.5px }
+
+@source inline('text-{display,headline,title,body,label}-{large,medium,small}');
 
 /* MD3 elevation */
 @utility elevation-0 {
-  box-shadow: 0px 0px 0px 0px rgba(var(--v-shadow-color), var(--v-shadow-key-opacity, 0.3)), 0px 0px 0px 0px rgba(var(--v-shadow-color), var(--v-shadow-ambient-opacity, 0.15));
-  --v-elevation-overlay: color-mix(in srgb, var(--v-elevation-overlay-color) 0%, transparent);
+	box-shadow: 0px 0px 0px 0px rgba(var(--v-shadow-color), var(--v-shadow-key-opacity, 0.3)), 0px 0px 0px 0px rgba(var(--v-shadow-color), var(--v-shadow-ambient-opacity, 0.15));
+	--v-elevation-overlay: color-mix(in srgb, var(--v-elevation-overlay-color) 0%, transparent);
 }
 @utility elevation-1 {
-  box-shadow: 0px 1px 2px 0px rgba(var(--v-shadow-color), var(--v-shadow-key-opacity, 0.3)), 0px 1px 3px 1px rgba(var(--v-shadow-color), var(--v-shadow-ambient-opacity, 0.15));
-  --v-elevation-overlay: color-mix(in srgb, var(--v-elevation-overlay-color) 2%, transparent);
+	box-shadow: 0px 1px 2px 0px rgba(var(--v-shadow-color), var(--v-shadow-key-opacity, 0.3)), 0px 1px 3px 1px rgba(var(--v-shadow-color), var(--v-shadow-ambient-opacity, 0.15));
+	--v-elevation-overlay: color-mix(in srgb, var(--v-elevation-overlay-color) 2%, transparent);
 }
 @utility elevation-2 {
-  box-shadow: 0px 1px 2px 0px rgba(var(--v-shadow-color), var(--v-shadow-key-opacity, 0.3)), 0px 2px 6px 2px rgba(var(--v-shadow-color), var(--v-shadow-ambient-opacity, 0.15));
-  --v-elevation-overlay: color-mix(in srgb, var(--v-elevation-overlay-color) 4%, transparent);
+	box-shadow: 0px 1px 2px 0px rgba(var(--v-shadow-color), var(--v-shadow-key-opacity, 0.3)), 0px 2px 6px 2px rgba(var(--v-shadow-color), var(--v-shadow-ambient-opacity, 0.15));
+	--v-elevation-overlay: color-mix(in srgb, var(--v-elevation-overlay-color) 4%, transparent);
 }
 @utility elevation-3 {
-  box-shadow: 0px 1px 3px 0px rgba(var(--v-shadow-color), var(--v-shadow-key-opacity, 0.3)), 0px 4px 8px 3px rgba(var(--v-shadow-color), var(--v-shadow-ambient-opacity, 0.15));
-  --v-elevation-overlay: color-mix(in srgb, var(--v-elevation-overlay-color) 6%, transparent);
+	box-shadow: 0px 1px 3px 0px rgba(var(--v-shadow-color), var(--v-shadow-key-opacity, 0.3)), 0px 4px 8px 3px rgba(var(--v-shadow-color), var(--v-shadow-ambient-opacity, 0.15));
+	--v-elevation-overlay: color-mix(in srgb, var(--v-elevation-overlay-color) 6%, transparent);
 }
 @utility elevation-4 {
-  box-shadow: 0px 2px 3px 0px rgba(var(--v-shadow-color), var(--v-shadow-key-opacity, 0.3)), 0px 6px 10px 4px rgba(var(--v-shadow-color), var(--v-shadow-ambient-opacity, 0.15));
-  --v-elevation-overlay: color-mix(in srgb, var(--v-elevation-overlay-color) 8%, transparent);
+	box-shadow: 0px 2px 3px 0px rgba(var(--v-shadow-color), var(--v-shadow-key-opacity, 0.3)), 0px 6px 10px 4px rgba(var(--v-shadow-color), var(--v-shadow-ambient-opacity, 0.15));
+	--v-elevation-overlay: color-mix(in srgb, var(--v-elevation-overlay-color) 8%, transparent);
 }
 @utility elevation-5 {
-  box-shadow: 0px 4px 4px 0px rgba(var(--v-shadow-color), var(--v-shadow-key-opacity, 0.3)), 0px 8px 12px 6px rgba(var(--v-shadow-color), var(--v-shadow-ambient-opacity, 0.15));
-  --v-elevation-overlay: color-mix(in srgb, var(--v-elevation-overlay-color) 10%, transparent);
+	box-shadow: 0px 4px 4px 0px rgba(var(--v-shadow-color), var(--v-shadow-key-opacity, 0.3)), 0px 8px 12px 6px rgba(var(--v-shadow-color), var(--v-shadow-ambient-opacity, 0.15));
+	--v-elevation-overlay: color-mix(in srgb, var(--v-elevation-overlay-color) 10%, transparent);
 }
 @utility elevation-overlay {
-  background-image: linear-gradient(var(--v-elevation-overlay), var(--v-elevation-overlay));
+	background-image: linear-gradient(var(--v-elevation-overlay), var(--v-elevation-overlay));
 }
 
-/* safelist for elevation="..." props */
 @source inline('elevation-{0,1,2,3,4,5}');

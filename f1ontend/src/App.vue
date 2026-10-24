@@ -10,8 +10,8 @@
 			color="surface-container"
 		>
 			<div class="px-5 pt-5 pb-3">
-				<div class="text-label-small text-on-surface-variant">F1 TIPSPIEL</div>
-				<div class="text-title-large mt-1">Wetten</div>
+				<div class="text-label-small tracking-[0.3em] text-on-surface-variant">F1 TIPSPIEL</div>
+				<div class="text-title-large font-bold mt-1">Wetten</div>
 			</div>
 
 			<v-divider />

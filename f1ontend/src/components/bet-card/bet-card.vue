@@ -13,7 +13,7 @@
 					:placed-at="placedAt"
 				/>
 
-				<v-card v-if="!createdId" class="h-full grow flex flex-col custom-height py-3 rounded-3xl transition-[border-radius] hover:rounded-lg" rounded="3xl" variant="flat">
+				<v-card v-if="!createdId" class="h-full grow flex flex-col custom-height py-3 shape-lg transition-[border-radius] hover:rounded-lg" rounded="3xl" variant="flat">
 					<div v-if="session" class="px-4 pt-4">
 						<div class="text-[10px] tracking-[0.3em] text-neutral-500">TIPP FÜR</div>
 						<div class="text-sm">
@@ -37,7 +37,7 @@
 
 					<v-card-actions class="justify-end mx-16 align-bottom">
 						<v-btn
-							class="bg-taupe-500 text-taupe-100"
+							class="bg-primary text-on-primary"
 							:loading="submitting"
 							:disabled="submitting || locked"
 							color="primary"

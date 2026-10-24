@@ -2,7 +2,7 @@
 	<v-container fluid class="mt-8 h-full flex items-center w-full flex-col grow">
 		<div class="flex flex-col grow w-full max-w-5xl mx-auto">
 			<v-container>
-				<v-card class="flex flex-col custom-height py-5 px-6 rounded-3xl" rounded="3xl" variant="flat">
+				<v-card class="flex flex-col custom-height py-5 px-6 shape-lg" rounded="3xl" variant="flat">
 					<div class="flex items-center justify-between mb-4">
 						<div>
 							<div class="text-[10px] tracking-[0.3em] text-neutral-500">F1 TIPSPIEL · PUNKTELISTE</div>
@@ -117,7 +117,7 @@
 							<tr
 								v-for="(row, i) in rest"
 								:key="row.player_id"
-								:class="{ 'bg-taupe-200': isMe(row) }"
+								:class="{ 'bg-primary-container text-on-primary-container': isMe(row) }"
 							>
 								<td>{{ i + 4 }}</td>
 								<td>
@@ -167,7 +167,7 @@
 
 			<v-card
 				v-if="auth.player?.role === 'admin'"
-				class="custom-height py-3 rounded-3xl mt-6"
+				class="custom-height py-3 shape-lg mt-6"
 				rounded="3xl"
 				variant="flat"
 			>
@@ -236,7 +236,7 @@
 				<div class="px-4 mt-4 flex items-center gap-3">
 					<v-btn
 						color="primary"
-						class="bg-taupe-500 text-taupe-100"
+						class="bg-primary text-on-primary"
 						:loading="seasonBusy"
 						:disabled="seasonBusy || !seasonResults"
 						@click="onScore"

@@ -1,5 +1,5 @@
 <template>
-	<v-card v-if="!createdId" class="custom-height py-3 rounded-3xl" rounded="3xl" variant="flat">
+	<v-card v-if="!createdId" class="custom-height py-3 shape-lg" rounded="3xl" variant="flat">
 		<div v-if="firstSession" class="px-4 pt-4">
 			<div class="text-[10px] tracking-[0.3em] text-neutral-500">TIPP FÜR SAISON</div>
 			<div class="text-sm">
@@ -33,7 +33,7 @@
 
 		<v-card-actions class="justify-end">
 			<v-btn
-				class="bg-taupe-500 text-taupe-100"
+				class="bg-primary text-on-primary"
 				:loading="submitting"
 				:disabled="!canSubmit"
 				color="primary"
@@ -46,7 +46,7 @@
 		<v-alert v-if="error" type="error" class="mt-3">{{ error }}</v-alert>
 	</v-card>
 
-	<v-card v-else class="custom-height py-3 rounded-3xl text-center" rounded="3xl" variant="flat">
+	<v-card v-else class="custom-height py-3 shape-lg text-center" rounded="3xl" variant="flat">
 		<div class="text-sm text-neutral-500">Wette platziert · {{ formatDateTime(placedAt!) }}</div>
 		<div class="text-xs">ID: {{ createdId }}</div>
 		<v-btn variant="plain" @click="reset">Neue Wette</v-btn>

@@ -12,7 +12,7 @@ import { getSeasonStart, type SessionInfo } from '@/plugins/startingGrid'
 export const useSeasonStore = defineStore('season', () => {
 	/** Aktuelles Jahr (0 = noch nicht initialisiert). */
 	const year = ref<number>(0)
-	/** Erste Session des Jahres, für Lock + Banner. */
+	/** Erste Session des Jahres, für Lock + Banner. null = noch nicht geladen. */
 	const firstSession = ref<SessionInfo | null>(null)
 	const loading = ref(false)
 	const error = ref<string | null>(null)
@@ -30,16 +30,19 @@ export const useSeasonStore = defineStore('season', () => {
 	 * sind (keine Dezember-vs-Januar-Diskrepanz).
 	 */
 	async function loadCurrent () {
+		// Parallele Aufrufe (z. B. zwei Season-Pages beim Mount) nicht doppelt feuern lassen.
+		if (loading.value) return
 		loading.value = true
 		error.value = null
+		const currentYear = new Date().getUTCFullYear()
 		try {
-			const session = await getSeasonStart(new Date().getUTCFullYear())
+			const session = await getSeasonStart(currentYear)
 			firstSession.value = session
 			year.value = new Date(session.date_start).getUTCFullYear()
 		} catch (e) {
 			error.value = e instanceof Error ? e.message : String(e)
 			// Fallback: aktuelles UTC-Jahr, damit UI nicht komplett blockt.
-			if (year.value === 0) year.value = new Date().getUTCFullYear()
+			if (year.value === 0) year.value = currentYear
 		} finally {
 			loading.value = false
 		}

@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { onBeforeMount, onBeforeUnmount, ref, watch } from 'vue'
 import { useDisplay } from 'vuetify'
 
 import AppBar from '@/components/app-bar/AppBar.vue'
@@ -66,7 +66,7 @@ watch(mobile, isMobile => {
 	drawerOpen.value = !isMobile
 })
 
-onMounted(() => {
+onBeforeMount(() => {
 	theme.init()
 	theme.bindVuetify()
 })

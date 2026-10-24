@@ -25,6 +25,7 @@ export type Placement = {
  */
 export type CouponContext = {
 	sessionKey?: number
+	seasonYear?: number
 }
 
 /**

@@ -97,7 +97,7 @@ function onDragEnd () {
 }
 
 .coupon{
-	border-radius: 14px;
+	border-radius: 16px;
 	box-shadow:
 		0 1px 2px rgb(0 0 0 / 0.04),
 		0 10px 30px -10px rgb(0 0 0 / 0.15);

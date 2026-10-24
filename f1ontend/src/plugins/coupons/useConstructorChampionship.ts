@@ -22,6 +22,10 @@ export function useConstructorChampionship (initialPick: TeamPick, initialRank =
 	const placedAt = ref<string | null>(null)
 
 	async function submit () {
+		if (!Number.isInteger(rank.value) || rank.value < 1 || rank.value > 20) {
+			error.value = 'Bitte gültigen Rang (1–20) eingeben.'
+			return
+		}
 		submitting.value = true
 		error.value = null
 		try {

@@ -61,7 +61,16 @@
 										:key="n"
 										class="p-0"
 									>
+										<template v-if="row.key === 'constructorChampionship'">
+											<MatrixCell
+												v-if="constructorPlacementFor(row, n)"
+												v-bind="constructorCellProps(constructorPlacementFor(row, n)!)"
+												:position="n"
+											/>
+											<MatrixCell v-else :position="n" />
+										</template>
 										<MatrixCell
+											v-else
 											:placement="placementFor(row, n)"
 											:position="n"
 											:driver="driverFor(placementFor(row, n))"
@@ -137,10 +146,10 @@ import MatrixCell from '@/components/wettschein-matrix/matrix-cell.vue'
 import type { Placement } from '@/plugins/coupon'
 import { positionColors } from '@/plugins/coupons/positionColors'
 import type { PodiumDriver } from '@/plugins/coupons/types'
-import { useWettschein, type WettscheinRow } from '@/plugins/coupons/useWettschein'
+import { useWettschein, type ConstructorPlacement, type WettscheinRow } from '@/plugins/coupons/useWettschein'
 import type { DriverInfo } from '@/plugins/drivers'
 
-const { rows, drivers, loading, error, load } = useWettschein()
+const { rows, drivers, teams, loading, error, load } = useWettschein()
 
 const dialogOpen = ref(false)
 const selectedRow = ref<WettscheinRow | null>(null)
@@ -153,15 +162,56 @@ function driverFor (placement: Placement | undefined): DriverInfo | undefined {
 	return placement ? drivers.value[placement.driver_id] : undefined
 }
 
+/** Für Konstrukteurs-Zeile: Konstrukteurs-Platzierung an einer Position finden. */
+function constructorPlacementFor (row: WettscheinRow, position: number): ConstructorPlacement | undefined {
+	return row.constructorPlacements?.find(p => p.position === position)
+}
+
+/**
+ * Für Konstrukteurs-Zeile: synthetisches Placement + DriverInfo für MatrixCell.
+ * MatrixCell nutzt `driver.name_acronym` für die Anzeige – wir setzen den
+ * Team-Namen als Akronym, damit keine driver_id angezeigt wird.
+ */
+function constructorCellProps (
+	cp: ConstructorPlacement,
+): { placement: Placement; driver: DriverInfo } {
+	const team = teams.value.get(cp.team_id)
+	const acronym = team
+		? team.team_name.split(' ').map(w => w[0]).join('').slice(0, 3).toUpperCase()
+		: `T${cp.team_id}`
+	const fullName = team?.team_name ?? `Team #${cp.team_id}`
+	return {
+		placement: { driver_id: cp.team_id, position: cp.position },
+		driver: {
+			driver_number: cp.team_id,
+			full_name: fullName,
+			first_name: '',
+			last_name: fullName,
+			name_acronym: acronym,
+		},
+	}
+}
+
 function openRow (row: WettscheinRow) {
 	selectedRow.value = row
 	dialogOpen.value = true
 }
 
-/** Platzierungen → Picks (nach Position aufsteigend, Fahrername aus Driver-Lookup). */
+/** Platzierungen → Picks (nach Position aufsteigend, Name aus Driver- oder Team-Lookup). */
 const selectedPicks = computed<PodiumDriver[]>(() => {
 	const row = selectedRow.value
 	if (!row) return []
+
+	// Konstrukteurs-WM: aus constructorPlacements befüllen
+	if (row.key === 'constructorChampionship') {
+		return [...(row.constructorPlacements ?? [])]
+			.sort((a, b) => a.position - b.position)
+			.map(p => ({
+				driver_id: p.team_id,
+				name: teams.value.get(p.team_id)?.team_name ?? `Team #${p.team_id}`,
+			}))
+	}
+
 	return [...row.placements]
 		.sort((a, b) => a.position - b.position)
 		.map(p => ({
@@ -174,7 +224,10 @@ const selectedPicks = computed<PodiumDriver[]>(() => {
 const selectedColors = computed<string[]>(() => {
 	const row = selectedRow.value
 	if (!row) return []
-	return [...row.placements]
+	const placements = row.key === 'constructorChampionship'
+		? (row.constructorPlacements ?? [])
+		: row.placements
+	return [...placements]
 		.sort((a, b) => a.position - b.position)
 		.map(p => positionColors[p.position - 1] ?? '#ffffff')
 })

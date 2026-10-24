@@ -35,7 +35,7 @@
 			<v-btn
 				class="bg-taupe-500 text-taupe-100"
 				:loading="submitting"
-				:disabled="submitting || isStarted || !selectedTeam"
+				:disabled="!canSubmit"
 				color="primary"
 				@click="onSubmit"
 			>
@@ -47,7 +47,7 @@
 	</v-card>
 
 	<v-card v-else class="custom-height py-3 rounded-3xl text-center" rounded="3xl" variant="flat">
-		<div class="text-sm text-neutral-500">Wette platziert · {{ placedAt }}</div>
+		<div class="text-sm text-neutral-500">Wette platziert · {{ formatDateTime(placedAt!) }}</div>
 		<div class="text-xs">ID: {{ createdId }}</div>
 		<v-btn variant="plain" @click="reset">Neue Wette</v-btn>
 	</v-card>
@@ -96,9 +96,25 @@
 		void submit()
 	}
 
+	const canSubmit = computed(() =>
+		!isStarted.value
+		&& !submitting.value
+		&& selectedTeam.value > 0
+		&& Number.isInteger(rank.value)
+		&& rank.value >= 1
+		&& rank.value <= 20,
+	)
+
 	function formatDate (iso: string): string {
 		return new Date(iso).toLocaleDateString('de-DE', {
 			day: '2-digit', month: '2-digit', year: 'numeric',
+		})
+	}
+
+	function formatDateTime (iso: string): string {
+		return new Date(iso).toLocaleString('de-DE', {
+			day: '2-digit', month: '2-digit', year: 'numeric',
+			hour: '2-digit', minute: '2-digit',
 		})
 	}
 </script>

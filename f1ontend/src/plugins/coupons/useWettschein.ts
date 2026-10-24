@@ -1,6 +1,13 @@
 import { ref } from 'vue'
 import { listCoupons, type CreatedCoupon, type Placement } from '../coupon'
 import { listDrivers, type DriverInfo } from '../drivers'
+import { listTeams, type Team } from '../season'
+
+/** Eine Platzierung für die Konstrukteurs-WM (team_id statt driver_id). */
+export type ConstructorPlacement = {
+	team_id: number
+	position: number
+}
 
 /** Eine normalisierte Zeile der Wettschein-Matrix (ein Wetttyp). */
 export type WettscheinRow = {
@@ -9,12 +16,18 @@ export type WettscheinRow = {
 	name: string
 	/** Platzierungen des zuletzt platzierten Coupons dieser Wettart (leer wenn keiner). */
 	placements: Placement[]
+	/**
+	 * Konstrukteurs-Platzierungen – nur für key === 'constructorChampionship' gesetzt.
+	 * In diesem Fall ist `placements` leer.
+	 */
+	constructorPlacements?: ConstructorPlacement[]
 	/** Coupon-ID des zuletzt platzierten Coupons (für die Anzeige). */
 	couponId?: string
 }
 
 type PlacementsSchema = { placements: Placement[] }
-type PlacementSchema = { placement: Placement }
+type DriverPlacementSchema = { placement: Placement }
+type ConstructorPlacementSchema = { placement: ConstructorPlacement }
 
 /** Nimmt den jüngsten Coupon einer Liste (API liefert ohne definierten Sort). */
 function latest<T> (coupons: CreatedCoupon<T>[]): CreatedCoupon<T> | undefined {
@@ -28,6 +41,7 @@ function latest<T> (coupons: CreatedCoupon<T>[]): CreatedCoupon<T> | undefined {
 export function useWettschein () {
 	const rows = ref<WettscheinRow[]>([])
 	const drivers = ref<Record<number, DriverInfo>>({})
+	const teams = ref<Map<number, Team>>(new Map())
 	const loading = ref(false)
 	const error = ref<string | null>(null)
 
@@ -36,17 +50,20 @@ export function useWettschein () {
 		error.value = null
 
 		try {
-			const [top3, top10, driverChamp, constructorChamp, teamDuell, driverList] = await Promise.all([
+			const [top3, top10, driverChamp, constructorChamp, teamDuell, driverList, teamList] = await Promise.all([
 				listCoupons<PlacementsSchema>('race', 'top3coupon'),
 				listCoupons<PlacementsSchema>('race', 'top10coupon'),
-				listCoupons<PlacementSchema>('season', 'driverChampionshipRank'),
-				listCoupons<PlacementSchema>('season', 'constructorChampionshipRank'),
+				listCoupons<DriverPlacementSchema>('season', 'driverChampionshipRank'),
+				listCoupons<ConstructorPlacementSchema>('season', 'constructorChampionshipRank'),
 				listCoupons<PlacementsSchema>('season', 'teamDuell'),
 				// Fahrerliste ist optional – ohne sie zeigen wir nur die Fahrer-ID.
 				listDrivers().catch(() => [] as DriverInfo[]),
+				// Teamliste ist optional – ohne sie zeigen wir nur die Team-ID.
+				listTeams().catch(() => [] as Team[]),
 			])
 
 			drivers.value = Object.fromEntries(driverList.map(d => [d.driver_number, d]))
+			teams.value = new Map(teamList.map(t => [t.id, t]))
 
 			const latestTop3 = latest(top3)
 			const latestTop10 = latest(top10)
@@ -76,7 +93,10 @@ export function useWettschein () {
 				{
 					key: 'constructorChampionship',
 					name: 'Konstrukteurs-WM',
-					placements: latestConstructorChamp ? [latestConstructorChamp.schema.data.placement] : [],
+					placements: [],
+					constructorPlacements: latestConstructorChamp
+						? [latestConstructorChamp.schema.data.placement]
+						: [],
 					couponId: latestConstructorChamp?.id,
 				},
 				{
@@ -93,5 +113,5 @@ export function useWettschein () {
 		}
 	}
 
-	return { rows, drivers, loading, error, load }
+	return { rows, drivers, teams, loading, error, load }
 }

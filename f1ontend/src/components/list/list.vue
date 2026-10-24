@@ -1,6 +1,6 @@
 <template>
-	<div class="bg-taupe-200 v-card v-theme--light v-card--density-default v-card--variant-flat coupon font-mono text-neutral-900 mb-6">
-	<v-list lines="two" class="bg-taupe-200 mx-4 px-4 py-1 rounded-2xl">
+	<div class="bg-surface-container coupon font-mono text-on-surface mb-6 shape-lg">
+	<v-list lines="two" bg-color="surface-container" class="mx-4 px-4 py-1 shape-lg">
 		<div
 			v-for="(pick, i) in picks"
 			:key="`${pick.driver_id}-${i}`"
